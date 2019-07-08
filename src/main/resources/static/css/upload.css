@@ -1,0 +1,94 @@
+   #container {
+            position: relative;
+        }
+        #uploadBtn {
+            height: 2em;
+            background-color: #767997;
+            border: none;
+            outline: none;
+            color: white;
+            box-shadow: inset 2px 2px 2px #a9acca,
+                        inset -2px -2px 2px #434664;
+        }
+        #pic-list {
+            list-style-type: none;
+            position: absolute;
+            border: 2px solid #767997;
+            padding: 5px;
+            display: none;
+            width: 315px;
+        }
+        #pic-list #triangle {
+            border: 10px solid #767997;
+            border-color: transparent transparent #767997 transparent;
+            position: absolute;
+            top: -20px;
+            left: 5px;
+        }
+        #pic-list #title {
+            padding-bottom: 5px;
+        }
+        #pic-list #title span {
+            font-weight: bold;
+        }
+        #pic-list #title b {
+            float: right;
+        }
+        #pic-list #title b:hover {
+            color: #434664;
+        }
+        #pic-list #title #hint {
+            color: #434664;
+            font-size: .7em;
+            padding-top: .7em;
+        }
+        #pic-list li {
+            position: relative;
+            display: inline-block;
+            float: left;
+            margin: 5px 5px 0px 0px;
+            font-size: 0px; /* 解决换行间隙问题 */
+        }
+        #pic-list li#addBtn {
+            box-sizing: border-box;
+            width: 100px;
+            height: 100px;
+            line-height: 90px;
+            border: 2px dashed #CCC;
+            color: #CCC;
+            font-size: 80px;
+            text-align: center;
+            padding-bottom: 30px;
+        }
+        #pic-list li img {
+            box-sizing: border-box;
+            width: 100px;
+            height: 100px;
+            border: 2px dashed #CCC;
+        }
+        #pic-list li:not(#addBtn):hover {
+            filter: alpha(Opacity=50);
+            -moz-opacity: 0.5;
+            opacity: 0.5;
+        }
+        #pic-list li#addBtn:hover {
+            border-color: #767997;
+            color: #767997;
+        }
+        #pic-list li b{
+            display: none;
+            position: absolute;
+            right: 0px;
+            top: 0px;
+            color: black;
+            font-size: 15px;
+            text-align: center;
+        }
+        #pic-list li:not(#addBtn):hover b {
+            display: block;
+            width: 20px;
+            height: 20px;
+        }
+        #pic-list li:not(#addBtn):hover b:hover {
+            background-color: #808080;
+        }
