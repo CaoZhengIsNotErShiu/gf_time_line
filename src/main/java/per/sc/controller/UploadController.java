@@ -1,5 +1,7 @@
 package per.sc.controller;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,6 +25,9 @@ import java.util.UUID;
 @RequestMapping("upload")
 @Controller
 public class UploadController {
+
+    private static final Logger logger =
+            LogManager.getLogger(UploadController.class);
 
 //    @RequestMapping(value = "showLoad", method = RequestMethod.GET)
 //    public String showLoad(){
@@ -52,7 +57,7 @@ public class UploadController {
     @RequestMapping(value = "uploadImage", method = RequestMethod.POST)
     @ResponseBody
     public HttpResult upload(@RequestParam("file") MultipartFile file){
-
+        logger.info("@@1.上传图片 uploadImage start @@");
         HttpResult result = new HttpResult();
         String path = UUID.randomUUID().toString() + ".jpg";
         ImagePOJO pojo = new ImagePOJO();
@@ -66,6 +71,7 @@ public class UploadController {
             }
         }
         result.setData(pojo);
+        logger.info("@@2.上传图片 uploadImage end @@");
         return result;
     }
 
@@ -78,8 +84,8 @@ public class UploadController {
     @RequestMapping(value = "deleteImage", method = RequestMethod.POST)
     @ResponseBody
     public HttpResult deleteImage(@RequestParam("path") String path ){
+        logger.info("@@1.删除图片 deleteImage start @@");
         String replace = path.replace(ConstantClassField.IMAGE_URL_PATH, "");
-
         String absPath = ConstantClassField.UPLOAD_PATH+ replace;
         File file = new File(absPath);
         HttpResult result = new HttpResult();
@@ -90,6 +96,7 @@ public class UploadController {
         }
         FileUtils.delFile(absPath);
         result.setStatus(1);
+        logger.info("@@2.删除图片 deleteImage end @@");
         return result;
     }
 
