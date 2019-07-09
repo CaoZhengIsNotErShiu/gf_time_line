@@ -1,0 +1,28 @@
+package per.sc.mapper;
+
+import per.sc.pojo.TimeLineVO;
+
+import java.util.List;
+
+/**
+ * @Disc 发布功能
+ * @Author caozheng
+ * @Date: 19/7/9 下午7:26
+ * @Version 1.0
+ */
+public interface UploadMapper {
+
+    /**
+     * 添加时间线信息
+     *
+     * @param timeLine
+     * @return
+     */
+     void addTimeLine(TimeLineVO timeLine);
+
+    /**
+     * 查询所有时间线
+     * @return
+     */
+    List<TimeLineVO> queryAllTimeLineInfo();
+}

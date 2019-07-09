@@ -106,7 +106,7 @@ spring:
   #mysql配置
   datasource:
     name: tbc_common
-    url: jdbc:mysql://localhost:3306/picDistinguish?useUnicode=true&characterEncoding=utf8
+    url: jdbc:mysql://localhost:3306/time_line?useUnicode=true&characterEncoding=utf8
     username: root
     password: 123456
     # 使用druid数据源

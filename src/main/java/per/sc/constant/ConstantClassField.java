@@ -2,13 +2,11 @@ package per.sc.constant;
 
 /**
  * @Disc
- * @Author caozheng
  * @Date: 19/7/8 下午1:34
  * @Version 1.0
- */
-/**
  * Method One
  * 定义常量类
+ * @author caozheng
  */
 public final class ConstantClassField {
 

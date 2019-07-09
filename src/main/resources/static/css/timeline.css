@@ -20,6 +20,14 @@ body {
   background-color: #e9f0f5;
 }
 
+.playMore{color:#a3a3a3;}
+.playMore .more-btn{background:url(/images/more.png) no-repeat left center;color:#fe5341;}
+.playMore .loading{background-image:url(/images/loading-icon.gif);}
+
+.playMore{text-align:center;font-size:16px;padding-top:10px;padding-bottom:50px;}
+.playMore .more-btn{padding-left:24px;}
+.report .playMore{padding-top:22px;}
+
 a {
   color: #acb7c0;
   text-decoration: none;

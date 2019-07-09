@@ -1,18 +1,26 @@
 package per.sc.controller;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import per.sc.constant.ConstantClassField;
-import per.sc.pojo.ImagePOJO;
-import per.sc.pojo.TimeLinePOJO;
+import per.sc.pojo.ImageVO;
+import per.sc.pojo.TimeLineVO;
+import per.sc.service.UploadServiceI;
+import per.sc.util.DateUtil;
 import per.sc.util.FileUtils;
 import per.sc.util.HttpResult;
+import per.sc.util.StrUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -29,10 +37,8 @@ public class UploadController {
     private static final Logger logger =
             LogManager.getLogger(UploadController.class);
 
-//    @RequestMapping(value = "showLoad", method = RequestMethod.GET)
-//    public String showLoad(){
-//        return "html/upload";
-//    }
+    @Autowired
+    private UploadServiceI uploadService;
 
 
     @RequestMapping(value = "showMsg", method = RequestMethod.GET)
@@ -41,11 +47,60 @@ public class UploadController {
     }
 
 
+    @RequestMapping(value = "showUpload", method = RequestMethod.GET)
+    public String showUpload(){
+        return "upload/index";
+    }
+
+    /**
+     * 查询所有时间线
+     * @return
+     */
+    @RequestMapping(value = "queryAllTimeLineInfo", method = RequestMethod.GET)
+    @ResponseBody
+    public HttpResult queryAllTimeLineInfo(@RequestParam(value="pn",defaultValue="1")Integer pn){
+        logger.info("@@1.查询所有时间线 queryAllTimeLineInfo start @@");
+        HttpResult result = new HttpResult();
+        PageHelper.startPage(pn,2);
+        List<TimeLineVO> list = uploadService.queryAllTimeLineInfo();
+        try {
+//            list = ;
+
+        } catch (Exception e) {
+            logger.error("## 1.查询所有时间线 queryAllTimeLineInfo err##",e);
+        }
+        PageInfo pageInfo = new PageInfo(list,2);
+        if (CollectionUtils.isNotEmpty(list)){
+            result.setStatus(200);
+            result.setData(pageInfo);
+        }
+        logger.info("@@2.查询所有时间线 queryAllTimeLineInfo end @@");
+        return result;
+    }
+
+    /**
+     * 发布时间线
+     * @param timeLine
+     * @return
+     */
     @RequestMapping(value = "addTimeLine", method = RequestMethod.POST)
     @ResponseBody
-    public HttpResult addTimeLine(TimeLinePOJO timeLine){
+    public HttpResult addTimeLine(TimeLineVO timeLine){
         HttpResult result = new HttpResult();
-        System.out.println(timeLine.toString());
+        String Symbol = "#";
+        String content = timeLine.getContent();
+        int number = 2;
+        if (StrUtils.StrCount(content,Symbol) >= number ){
+            String cutTitle = StrUtils.getCutOutString(timeLine.getContent(), Symbol, Symbol);
+            timeLine.setTitle(cutTitle);
+            int i = content.indexOf(Symbol);
+            String substring = content.substring(content.indexOf(Symbol, i+1)+1);
+            timeLine.setContent(substring);
+        }else{
+            String dateShort = DateUtil.getStringDateShort();
+            timeLine.setTitle(dateShort);
+        }
+        uploadService.addTimeLine(timeLine);
         return result;
     }
 
@@ -60,7 +115,7 @@ public class UploadController {
         logger.info("@@1.上传图片 uploadImage start @@");
         HttpResult result = new HttpResult();
         String path = UUID.randomUUID().toString() + ".jpg";
-        ImagePOJO pojo = new ImagePOJO();
+        ImageVO pojo = new ImageVO();
         pojo.setUrl(path);
         String filePath = ConstantClassField.UPLOAD_PATH+ path;
         if (!file.isEmpty()){

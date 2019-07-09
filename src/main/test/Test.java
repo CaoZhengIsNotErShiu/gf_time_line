@@ -1,4 +1,4 @@
-import per.sc.pojo.TimeLinePOJO;
+import per.sc.util.StrUtils;
 
 /**
  * @Disc
@@ -19,10 +19,20 @@ public class Test {
 
     @org.junit.Test
     public void test2(){
-        TimeLinePOJO pojo = new TimeLinePOJO();
-        pojo.setContent("111");
-        pojo.setImageUrl("213123");
+        String str = "123123123123123#在这里输入你想要说的标";
+//        String cutOutString = StrUtils.getCutOutString(str, "#", "#");
+//        System.out.println(cutOutString);
+
+//        int i = str.indexOf("#");
+//        String substring = str.substring(str.indexOf("#", i+1)+1);
+//        System.out.println(substring);
     }
+
+
+
+
+
+
 
 
 }

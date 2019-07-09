@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>恭喜你发现了个菜单</title>
+
+<link href="/css/timeline.css" rel="stylesheet" type="text/css" />
+
+<script type="text/javascript" src="/js/modernizr.js"></script>
+<script type="text/javascript" src="/js/jquery-1.8.3.min.js"></script>
+
+</head>
+<body>
+	<header>
+		<h1>响应式垂直时间表</h1>
+	</header>
+
+	<section id="cd-timeline" class="cd-container" >
+	</section>
+	<div class="playMore">
+		<a  id="pageNum"  class="more-btn">点击加载更多</a>
+	</div>
+	
+<script>
+
+
+
+
+
+$(function(){
+
+    $("#pageNum").live("click",function(){
+        var self = $(this);
+        var param = '';//加载html变量
+        self.addClass("loading").html("正在加载中");
+        $.ajax({
+            url:"/upload/queryAllTimeLineInfo",    //请求的url地址
+            dataType:"json",   //返回格式为json
+            // data:data,    //参数值
+            type:"GET",   //请求方式
+            success:function(req){
+                //请求成功时处理
+                console.log(req.data)
+                var str="";
+                $.each(req.data.list,function(i,n){
+                    str+="<div class='cd-timeline-block'>";
+                    str+='<div class="cd-timeline-img cd-picture">';
+                    str+='<img src="/images/cd-icon-picture.svg" alt="Picture">';
+                    str+="</div>";
+                    str+='<div class="cd-timeline-content">';
+                    str+='<h2>'+n.title+'</h2>';
+                    str+='<p>'+n.content+'</p>';
+                    str+='<a href="#" class="cd-read-more">阅读更多</a>';
+                    str+='<span class="cd-date">'+n.createTime+'</span>';
+                    str+='</div>';
+                    str+='</div>';
+                });
+                if (req.data.pageNum == req.data.pages){
+                    self.parent().html('<span class="no-more">没有更多啦~</span>');
+                } else {
+                    self.removeClass("loading").html("点击加载更多");
+                }
+
+                $("#cd-timeline").append(str);
+            },
+            error:function(){
+                //请求出错处理
+                alert("似乎有点难隐之言了呢 ~ ~")
+            }
+        });
+
+    });
+
+
+
+
+	var $timeline_block = $('.cd-timeline-block');
+	//hide timeline blocks which are outside the viewport
+	$timeline_block.each(function(){
+		if($(this).offset().top > $(window).scrollTop()+$(window).height()*0.75) {
+			$(this).find('.cd-timeline-img, .cd-timeline-content').addClass('is-hidden');
+		}
+	});
+	//on scolling, show/animate timeline blocks when enter the viewport
+	$(window).on('scroll', function(){
+		$timeline_block.each(function(){
+			if( $(this).offset().top <= $(window).scrollTop()+$(window).height()*0.75 && $(this).find('.cd-timeline-img').hasClass('is-hidden') ) {
+				$(this).find('.cd-timeline-img, .cd-timeline-content').removeClass('is-hidden').addClass('bounce-in');
+			}
+		});
+	});
+});
+</script>
+
+</body>
+</html>

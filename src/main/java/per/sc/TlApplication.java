@@ -12,9 +12,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @SpringBootApplication
 @MapperScan("per.sc.mapper")
-public class TLApplication {
+public class TlApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(TLApplication.class, args);
+        SpringApplication.run(TlApplication.class, args);
     }
 }
