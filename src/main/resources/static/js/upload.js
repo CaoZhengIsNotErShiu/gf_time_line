@@ -51,7 +51,7 @@ $("#uploadBtn").click(function(event) {
                 },
                 FileUploaded: function(up, file, info) { // 文件上传成功时触发
                     var data = JSON.parse(info.response);
-                    var ip = "http://10.233.1.34:8088/image/"+data.data.url
+                    var ip = data.data.url
                     $("#"+file.id).html("<img src='"+ip+"'/><b onclick='delimg(this)'>x</b><input type='hidden' name='' value='"+ip+"'>");
                     console.log("success");
                     uploader.refresh(); // 重新渲染DOM，避免在添加按钮原位置仍会响应打开文件夹

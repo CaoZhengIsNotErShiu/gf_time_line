@@ -3,6 +3,7 @@ package per.sc.controller;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,50 +26,59 @@ import java.util.UUID;
 
 
 /**
- * @Disc
+ * @Disc 时间线界面接口
  * @Author caozheng
  * @Date: 19/7/4 下午1:50
  * @Version 1.0
  */
 @RequestMapping("upload")
 @Controller
-public class UploadController {
+public class TimeLineController {
 
     private static final Logger logger =
-            LogManager.getLogger(UploadController.class);
+            LogManager.getLogger(TimeLineController.class);
 
     @Autowired
     private UploadServiceI uploadService;
 
 
-    @RequestMapping(value = "showMsg", method = RequestMethod.GET)
-    public String showMsg(){
+    /**
+     * 显示发布时间线界面
+     * @return 返回界面
+     */
+    @RequestMapping(value = "showSend", method = RequestMethod.GET)
+    public String showSend(){
         return "html/msg";
     }
 
 
-    @RequestMapping(value = "showUpload", method = RequestMethod.GET)
-    public String showUpload(){
+    /**
+     * 显示时间线界面
+     * @return 返回界面
+     */
+    @RequestMapping(value = "showTimeLine", method = RequestMethod.GET)
+    public String showTimeLine(){
         return "upload/index";
     }
 
     /**
      * 查询所有时间线
-     * @return
+     * @param pn 当前页
+     * @return 时间线结果
      */
     @RequestMapping(value = "queryAllTimeLineInfo", method = RequestMethod.GET)
     @ResponseBody
     public HttpResult queryAllTimeLineInfo(@RequestParam(value="pn",defaultValue="1")Integer pn){
         logger.info("@@1.查询所有时间线 queryAllTimeLineInfo start @@");
         HttpResult result = new HttpResult();
-        PageHelper.startPage(pn,2);
+        PageHelper.startPage(pn,6);
         List<TimeLineVO> list = null;
         try {
             list = uploadService.queryAllTimeLineInfo();
         } catch (Exception e) {
             logger.error("## 1.查询所有时间线 queryAllTimeLineInfo err##",e);
         }
-        PageInfo pageInfo = new PageInfo(list,2);
+        PageInfo pageInfo = new PageInfo(list,6);
         if (CollectionUtils.isNotEmpty(list)){
             result.setStatus(200);
             result.setData(pageInfo);
@@ -89,6 +99,15 @@ public class UploadController {
         String Symbol = "#";
         String content = timeLine.getContent();
         int number = 2;
+        //判断是否上传了图片，添加不同图标
+        String imageUrl = timeLine.getImageUrl();
+        if (StringUtils.isNotBlank(imageUrl)){
+            timeLine.setColor("cd-timeline-img cd-picture");
+            timeLine.setPicture("/images/cd-icon-picture.svg");
+        }else{
+            timeLine.setColor("cd-timeline-img cd-movie");
+            timeLine.setPicture("/images/cd-icon-location.svg");
+        }
         if (StrUtils.StrCount(content,Symbol) >= number ){
             String cutTitle = StrUtils.getCutOutString(timeLine.getContent(), Symbol, Symbol);
             timeLine.setTitle(cutTitle);
@@ -114,8 +133,6 @@ public class UploadController {
         logger.info("@@1.上传图片 uploadImage start @@");
         HttpResult result = new HttpResult();
         String path = UUID.randomUUID().toString() + ".jpg";
-        ImageVO pojo = new ImageVO();
-        pojo.setUrl(path);
         String filePath = ConstantClassField.UPLOAD_PATH+ path;
         if (!file.isEmpty()){
             try {
@@ -124,6 +141,8 @@ public class UploadController {
                 e.printStackTrace();
             }
         }
+        ImageVO pojo = new ImageVO();
+        pojo.setUrl(ConstantClassField.IMAGE_URL_PATH+path);
         result.setData(pojo);
         logger.info("@@2.上传图片 uploadImage end @@");
         return result;
@@ -140,7 +159,7 @@ public class UploadController {
     public HttpResult deleteImage(@RequestParam("path") String path ){
         logger.info("@@1.删除图片 deleteImage start @@");
         String replace = path.replace(ConstantClassField.IMAGE_URL_PATH, "");
-        String absPath = ConstantClassField.UPLOAD_PATH+ replace;
+        String absPath = ConstantClassField.TEMP_PATH+ replace;
         File file = new File(absPath);
         HttpResult result = new HttpResult();
         if (!file.exists()){

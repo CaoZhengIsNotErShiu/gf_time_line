@@ -35,6 +35,14 @@ public class TimeLineVO {
      */
     private String imageUrl;
     /**
+     * 界面图片样式
+     */
+    private String color;
+    /**
+     * 界面图片
+     */
+    private String picture;
+    /**
      * 创建时间
      */
     private String createTime;

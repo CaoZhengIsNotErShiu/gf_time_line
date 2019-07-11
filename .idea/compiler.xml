@@ -9,5 +9,8 @@
         <module name="gf_time_line" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="gf_time_line" target="1.7" />
+    </bytecodeTargetLevel>
   </component>
 </project>
