@@ -62,10 +62,9 @@ public class UploadController {
         logger.info("@@1.查询所有时间线 queryAllTimeLineInfo start @@");
         HttpResult result = new HttpResult();
         PageHelper.startPage(pn,2);
-        List<TimeLineVO> list = uploadService.queryAllTimeLineInfo();
+        List<TimeLineVO> list = null;
         try {
-//            list = ;
-
+            list = uploadService.queryAllTimeLineInfo();
         } catch (Exception e) {
             logger.error("## 1.查询所有时间线 queryAllTimeLineInfo err##",e);
         }

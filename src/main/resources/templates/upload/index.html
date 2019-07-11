@@ -24,19 +24,14 @@
 <script>
 
 
-
-
-
-$(function(){
-
-    $("#pageNum").live("click",function(){
+    function getGuideNewest(index) {
         var self = $(this);
         var param = '';//加载html变量
         self.addClass("loading").html("正在加载中");
         $.ajax({
             url:"/upload/queryAllTimeLineInfo",    //请求的url地址
             dataType:"json",   //返回格式为json
-            // data:data,    //参数值
+			data:{pn:index},    //参数值
             type:"GET",   //请求方式
             success:function(req){
                 //请求成功时处理
@@ -55,22 +50,31 @@ $(function(){
                     str+='</div>';
                     str+='</div>';
                 });
+                // if (req.data.pageNum == req.data.pages){
+                //     self.parent().html('<span class="no-more">没有更多啦~</span>');
+                // } else {
+                //     self.removeClass("loading").html("点击加载更多");
+                // }
                 if (req.data.pageNum == req.data.pages){
-                    self.parent().html('<span class="no-more">没有更多啦~</span>');
+                    $("#pageNum").removeAttr("onclick");
+                    $("#pageNum").text("---我是您可爱的底线呢！---");
                 } else {
-                    self.removeClass("loading").html("点击加载更多");
+                    $("#pageNum").attr("onclick","getGuideNewest("+req.data.pageNum+"+1)");
                 }
-
                 $("#cd-timeline").append(str);
             },
             error:function(){
                 //请求出错处理
-                alert("似乎有点难隐之言了呢 ~ ~")
+                self.addClass("loading").html("正在加载中");
+                // alert("似乎有点难隐之言了呢 ~ ~")
             }
         });
+	}
 
-    });
 
+$(function(){
+        //init最新
+        getGuideNewest(1);
 
 
 
