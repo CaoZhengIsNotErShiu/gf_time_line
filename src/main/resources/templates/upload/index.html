@@ -32,7 +32,7 @@
             url:"/upload/queryAllTimeLineInfo",    //请求的url地址
             dataType:"json",   //返回格式为json
             data:{pn:index},    //参数值
-            type:"GET",   //请求方式
+            type:"POST",   //请求方式
             success:function(req){
                 //请求成功时处理
                 console.log(req.data)
@@ -45,12 +45,14 @@
                     str+='<div class="cd-timeline-content">';
                     str+='<h2>'+n.title+'</h2>';
                     str+='<p>'+n.content+'</p>';
-                    if(n.content != null){
-                        str+='<div class="img"></div>';
-                        $(".img").css("background-image", "url("+n.imageUrl+")");
+                    if(n.imageUrl != null){
+                        var ip =n.imageUrl;
+                        str+='<div class="img" style="background-image: url('+ip+')"></div>';
                     }
                     str+="<br>"
-                    str+='<a href="#" class="cd-read-more">阅读更多</a>';
+					var url = "http://10.233.1.240:8088/"
+					var id = n.id;
+                    str+='<a href="'+url+'detail/showDetail?id='+id+'" class="cd-read-more">阅读更多</a>';
                     str+='<span class="cd-date">'+n.createTime+'</span>';
                     str+='</div>';
                     str+='</div>';
@@ -62,7 +64,6 @@
                     $("#pageNum").attr("onclick","gettimelines("+req.data.pageNum+"+1)");
                 }
                 $("#cd-timeline").append(str);
-
                 var $timeline_block = $('.cd-timeline-block');
                 //hide timeline blocks which are outside the viewport
                 $timeline_block.each(function(){

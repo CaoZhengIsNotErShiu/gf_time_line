@@ -62,11 +62,35 @@ public class TimeLineController {
     }
 
     /**
+     * 根据id查询时间线
+     * @return 时间线结果
+     */
+    @RequestMapping(value = "queryTimeLineInfoById", method = RequestMethod.POST)
+    @ResponseBody
+    public HttpResult queryTimeLineInfoById(@RequestParam(value="id")Integer id){
+        logger.info("@@1.根据id查询时间线 queryTimeLineInfoById start @@");
+        HttpResult result = new HttpResult();
+        TimeLineVO lineVO = null;
+        try {
+            lineVO = uploadService.queryTimeLineInfoById(id);
+        } catch (Exception e) {
+            logger.info("@@1.根据id查询时间线 queryTimeLineInfoById err @@",e);
+        }
+        if (lineVO != null){
+            result.setStatus(200);
+            result.setData(lineVO);
+        }
+        logger.info("@@2.根据id查询时间线 queryTimeLineInfoById end @@");
+        return result;
+    }
+
+
+    /**
      * 查询所有时间线
      * @param pn 当前页
      * @return 时间线结果
      */
-    @RequestMapping(value = "queryAllTimeLineInfo", method = RequestMethod.GET)
+    @RequestMapping(value = "queryAllTimeLineInfo", method = RequestMethod.POST)
     @ResponseBody
     public HttpResult queryAllTimeLineInfo(@RequestParam(value="pn",defaultValue="1")Integer pn){
         logger.info("@@1.查询所有时间线 queryAllTimeLineInfo start @@");
@@ -104,6 +128,15 @@ public class TimeLineController {
         if (StringUtils.isNotBlank(imageUrl)){
             timeLine.setColor("cd-timeline-img cd-picture");
             timeLine.setPicture("/images/cd-icon-picture.svg");
+            String[] line=imageUrl.split("@");
+            for (String urlPath: line) {
+                String replace = urlPath.replace(ConstantClassField.IMAGE_URL_PATH, "");
+                //临时图片路径
+                String tempPath = ConstantClassField.TEMP_PATH+ replace;
+                //上传图片路径
+                String uploadPath = ConstantClassField.UPLOAD_PATH+ replace;
+                FileUtils.copyFile(tempPath,uploadPath);
+            }
         }else{
             timeLine.setColor("cd-timeline-img cd-movie");
             timeLine.setPicture("/images/cd-icon-location.svg");
@@ -133,7 +166,7 @@ public class TimeLineController {
         logger.info("@@1.上传图片 uploadImage start @@");
         HttpResult result = new HttpResult();
         String path = UUID.randomUUID().toString() + ".jpg";
-        String filePath = ConstantClassField.UPLOAD_PATH+ path;
+        String filePath = ConstantClassField.TEMP_PATH+ path;
         if (!file.isEmpty()){
             try {
                 file.transferTo(new File(filePath));

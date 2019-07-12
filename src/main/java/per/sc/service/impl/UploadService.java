@@ -41,4 +41,15 @@ public class UploadService implements UploadServiceI {
     public List<TimeLineVO> queryAllTimeLineInfo() {
         return uploadMapper.queryAllTimeLineInfo();
     }
+
+    /**
+     * 根据id查询时间线
+     * @param id 时间线id
+     * @return 返回单条时间线
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public TimeLineVO queryTimeLineInfoById(Integer id) {
+        return uploadMapper.queryTimeLineInfoById(id);
+    }
 }

@@ -19,13 +19,12 @@ public class Test {
 
     @org.junit.Test
     public void test2(){
-        String str = "123123123123123#在这里输入你想要说的标";
-//        String cutOutString = StrUtils.getCutOutString(str, "#", "#");
-//        System.out.println(cutOutString);
-
-//        int i = str.indexOf("#");
-//        String substring = str.substring(str.indexOf("#", i+1)+1);
-//        System.out.println(substring);
+        String str = "123123123123123在这里输入你想要说的标";
+        String[] line=str.split("@");
+        for (String s: line) {
+            System.out.println(line.length);
+            System.out.println(s);
+        }
     }
 
 

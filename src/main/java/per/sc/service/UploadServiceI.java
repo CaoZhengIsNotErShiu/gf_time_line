@@ -25,4 +25,11 @@ public interface UploadServiceI {
      * @return
      */
     List<TimeLineVO> queryAllTimeLineInfo();
+
+    /**
+     * 根据id查询时间线
+     * @param id 时间线id
+     * @return 根据id查询时间线
+     */
+    TimeLineVO queryTimeLineInfoById(Integer id);
 }

@@ -12,14 +12,17 @@ import java.io.File;
  */
 public final class ConstantClassField {
 
+
+/*    public static final String UPLOAD_PATH = "/Users/Macx/Desktop/素材/";*/
+
+    /**
+     * 图片最后存储位置
+     */
+    public static final String UPLOAD_PATH = "F:"+ File.separator+"uploadImage"+File.separator;
+
     /**
      * 图片上传临时地址
      */
-/*    public static final String UPLOAD_PATH = "/Users/Macx/Desktop/素材/";*/
-
-    public static final String UPLOAD_PATH = "F:"+ File.separator+"ImagePath"+File.separator;
-
-
     public static final String TEMP_PATH = "F:"+ File.separator+"ImagePath"+File.separator;
 
     /**

@@ -45,4 +45,8 @@
         select * from time_line_info
     </select>
 
+    <select id="queryTimeLineInfoById" resultMap="upload">
+        select * from time_line_info where id = #{id,jdbcType=INTEGER}
+    </select>
+
 </mapper>

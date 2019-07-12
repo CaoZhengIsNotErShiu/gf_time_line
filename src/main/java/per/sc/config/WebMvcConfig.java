@@ -23,12 +23,14 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        String ImagePath = "F:"+ File.separator+"ImagePath"+File.separator;
+        String tempPath = "F:"+ File.separator+"ImagePath"+File.separator;
+        String uploadPath = "F:"+ File.separator+"uploadImage"+File.separator;
         registry.addResourceHandler("/**")
                 .addResourceLocations("classpath:/static/");
         registry.addResourceHandler("/image/**")
 //                .addResourceLocations("file:/Users/Macx/Desktop/素材/");
-                .addResourceLocations("file:"+ImagePath);
+                .addResourceLocations("file:"+tempPath)
+                .addResourceLocations("file:"+uploadPath);
     }
 
     /**
