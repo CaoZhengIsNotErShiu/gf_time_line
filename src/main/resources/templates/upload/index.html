@@ -4,16 +4,31 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>恭喜你发现了个菜单</title>
 
+	<link rel="stylesheet" href="/icon/icon/icon.css">
+	<link rel="stylesheet" type="text/css" href="/css/uindex.css">
 	<link href="/css/timeline.css" rel="stylesheet" type="text/css" />
 	<link href="/css/picture.css" rel="stylesheet" type="text/css" />
 
+	<link rel="stylesheet" href="https://i.icomoon.io/public/temp/f8839203e3/UntitledProject/style.css">
+
 	<script type="text/javascript" src="/js/modernizr.js"></script>
 	<script type="text/javascript" src="/js/jquery-1.8.3.min.js"></script>
+	<script src="/icon/liga.js"></script>
+	<script src="/icon/icon/demo.js"></script>
 
 </head>
 <body>
-<header>
-	<h1>翩若惊鸿，婉若游龙</h1>
+<!--<header>-->
+<!--<h1>翩若惊鸿，婉若游龙</h1>-->
+<!--</header>-->
+
+<header class="htmleaf-header">
+	<h1>翩若惊鸿，婉若游龙 </h1>
+	<br/><br/>
+	<div class="htmleaf-links">
+		<a class="htmleaf-icon icon-pencil" href="http://10.233.1.240:8088/upload/showSend" title="发布我的故事" target="_parent"><span> 首页</span></a>
+		<a class="htmleaf-icon icon-redo2" href="http://10.233.1.240:8088/timelineIndex/showIndex" title="去看看别人的故事" target="_parent"><span> 去看看别人的故事</span></a>
+	</div>
 </header>
 
 <section id="cd-timeline" class="cd-container" >
@@ -50,8 +65,8 @@
                         str+='<div class="img" style="background-image: url('+ip+')"></div>';
                     }
                     str+="<br>"
-					var url = "http://10.233.1.240:8088/"
-					var id = n.id;
+                    var url = "http://10.233.1.240:8088/"
+                    var id = n.id;
                     str+='<a href="'+url+'detail/showDetail?id='+id+'" class="cd-read-more">阅读更多</a>';
                     str+='<span class="cd-date">'+n.createTime+'</span>';
                     str+='</div>';

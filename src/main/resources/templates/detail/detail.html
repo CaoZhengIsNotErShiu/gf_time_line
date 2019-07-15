@@ -25,16 +25,21 @@
 		<h1>荣曜秋菊，华茂春松 <span>Write the code. Change the world.</span></h1>
 		<div class="htmleaf-links">
 			<a class="htmleaf-icon icon-htmleaf-home-outline" href="http://10.233.1.240:8088/upload/showTimeLine" title="首页" target="_parent"><span> 首页</span></a>
-			<a class="htmleaf-icon icon-htmleaf-arrow-forward-outline" href="http://www.jb51.net/" title="返回下载页" target="_blank"><span> 返回下载页</span></a>
+			<a class="htmleaf-icon icon-htmleaf-arrow-forward-outline" href="http://10.233.1.240:8088/timelineIndex/showIndex" title="去看看别人的故事" target="_parent"><span> 去看看别人的故事</span></a>
 		</div>
 	</header>
 	<section id="demo">
 		<div class="container features align center">
 			<div class="demo" id="detailDiv">
-				<ul style="text-align:center;">
+				<h3 style='text-align: center;' id="h3title"></h3>
+				<p style='text-align: center;' id="createTime"></p>
+				<p id="p-content"><br><br>
+					&nbsp;&nbsp;
+				</p>
+				<ul id="ulImage" style="text-align:center;">
 					<li><img data-src="http://10.233.1.240:8088/image/23c07878-f05f-48e1-8462-ef43da4086c6.jpg"
 							 src="https://source.unsplash.com/2o_2syCZS5M/200x200"
-							 data-caption="新垣结衣" class="demo-gallery">
+							 data-caption="新垣结衣21" class="demo-gallery">
 					</li>
 				</ul>
 			</div>
@@ -52,20 +57,27 @@
                 type: "POST",   //请求方式
                 success: function (req) {
                     //请求成功时处理
-                    console.log(req.data)
-                    var str = "";
-                    str +="<h3 style='text-align: center;'>"+req.data.title+"</h3>";
-                    str +="<p><br><br>";
-                    str +="&nbsp;&nbsp;"+req.data.content+"</p>";
-                    str +="<ul style='text-align:center;'>";
-                    var ip = req.data.imageUrl;
-                    console.log(ip)
-                    str+='<li><img data-src="http://10.233.1.240:8088/image/23c07878-f05f-48e1-8462-ef43da4086c6.jpg"';
-                    str+='src="https://source.unsplash.com/2o_2syCZS5M/200x200"';
-                    str+='data-caption="新垣结衣" class="demo-gallery">';
-                    str+='</li>';
-                    str +="</ul>";
-                    $("#detailDiv").append(str);
+                    var title = req.data.title;
+					$('#h3title').html(title)
+                    var createTime = req.data.createTime;
+                    $('#createTime').html(createTime)
+					var content = req.data.content;
+                    $('#p-content').html(content);
+                    var html ="";
+                    var data = req.data.imageUrl;
+                    var caption = req.data.title +req.data.createTime;
+                    var dg = "demo-gallery";
+
+                    html+='<li><img style="height: 300px; width:260px;" data-src='+data+' ' +
+						'src='+data+' ' +
+						'data-caption='+caption+' ' +
+						'class='+dg+'>  </li><br>';
+					if (req.data.imageUrl != null){
+                        $("#ulImage").html(html);
+					}else{
+                        $("#ulImage").hide();
+					}
+
                 },
                 error: function () {
                     //请求出错处理
