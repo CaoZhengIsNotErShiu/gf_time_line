@@ -125,6 +125,13 @@
       <optional>true</optional>
       <scope>true</scope>
     </dependency>
+
+    <!--腾讯短信sms-->
+    <dependency>
+      <groupId>com.github.qcloudsms</groupId>
+      <artifactId>qcloudsms</artifactId>
+      <version>1.0.6</version>
+    </dependency>
   </dependencies>
 
   <build>
