@@ -73,6 +73,7 @@ $(function(){
 		} else {
 			var phone = $.trim($('#num2').val());
 			var code2 = $.trim($('#veri-code').val());
+			console.log(phone+code2)
 			if (phone != '' && code2 != '') {
 				$(".log-btn").removeClass("off");
 				sendBtn();
@@ -125,30 +126,30 @@ $(function(){
 			$('.num2-err').text('手机号不合法，请重新输入');
 			return false;
 		}
-		status = true;
-        // $.ajax({
-        //     url: '/checkPhone',
-        //     type: 'post',
-        //     dataType: 'json',
-        //     async: false,
-        //     data: {phone:phone,type:"login"},
-        //     success:function(data){
-        //         if (data.code == '0') {
-        //             $('.num2-err').addClass('hide');
-        //             // console.log('aa');
-        //             // return true;
-        //         } else {
-        //             $('.num2-err').removeClass('hide').text(data.msg);
-        //             // console.log('bb');
-			// 		status = false;
-			// 		// return false;
-        //         }
-        //     },
-        //     error:function(){
-        //     	status = false;
-        //         // return false;
-        //     }
-        // });
+        $.ajax({
+            url: '/user/checkPhone',
+            type: 'post',
+            dataType: 'json',
+            async: false,
+            data: {phone:phone},
+            success:function(data){
+                if (data.status == 500) {
+                    $('.num2-err').addClass('hide');
+                    console.log(data.msg)
+                    // console.log('aa');
+                    // return true;
+                } else {
+                    $('.num2-err').removeClass('hide').text(data.msg);
+                    // console.log('bb');
+					status = false;
+					// return false;
+                }
+            },
+            error:function(){
+            	status = false;
+                // return false;
+            }
+        });
 		return status;
 	}
 
@@ -228,20 +229,20 @@ $(function(){
 				var pcode = $.trim($('#veri-code').val());
 				if (checkPhone(phone) && checkPass(pcode)) {
 					$.ajax({
-			            url: '/plogin',
+			            url: '/user/plogin',
 			            type: 'post',
 			            dataType: 'json',
 			            async: true,
 			            data: {phone:phone,code:pcode},
 			            success:function(data){
-			                if (data.code == '0') {
+			                if (data.status == '0') {
 			                	// globalTip({'msg':'登录成功!','setTime':3,'jump':true,'URL':'http://www.ui.cn'});
 			                	globalTip(data.msg);
-			                } else if(data.code == '1') {
+			                } else if(data.status == '1') {
 			                	$(".log-btn").off('click').addClass("off");
 			                    $('.num2-err').removeClass('hide').text(data.msg);
 			                    return false;
-			                } else if(data.code == '2') {
+			                } else if(data.status == '2') {
 			                	$(".log-btn").off('click').addClass("off");
 			                    $('.error').removeClass('hide').text(data.msg);
 			                    return false;
@@ -269,7 +270,6 @@ $(function(){
 
 
 	$(".form-data").delegate(".send","click",function () {
-		console.log('getcode')
 		var phone = $.trim($('#num2').val());
 		if (checkPhone(phone)) {
 				$.ajax({
@@ -277,32 +277,30 @@ $(function(){
 		            type: 'post',
 		            dataType: 'json',
 		            async: true,
-		            // data: {phone:phone,type:"login"},
+					data: {phone:phone},
 		            success:function(data){
-		                if (data.code == '0') {
-		                    
-		                } else {
-		                    
+		                if (data.status == 0) {
+
 		                }
 		            },
 		            error:function(){
-		                
+
 		            }
 		        });
 	       	var oTime = $(".form-data .time"),
-			oSend = $(".form-data .send"),
-			num = parseInt(oTime.text()),
-			oEm = $(".form-data .time em");
-		    $(this).hide();
-		    oTime.removeClass("hide");
-		    var timer = setInterval(function () {
+            oSend = $(".form-data .send"),
+            num = parseInt(oTime.text()),
+            oEm = $(".form-data .time em");
+            $(this).hide();
+            oTime.removeClass("hide");
+            var timer = setInterval(function () {
 		   	var num2 = num-=1;
 	            oEm.text(num2);
 	            if(num2==0){
 	                clearInterval(timer);
 	                oSend.text("重新发送验证码");
 				    oSend.show();
-	                oEm.text("120");
+	                oEm.text("60");
 	                oTime.addClass("hide");
 	            }
 	        },1000);

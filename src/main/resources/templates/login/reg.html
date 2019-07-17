@@ -23,10 +23,8 @@
                     <p class="p-input pos">
                         <label for="tel">手机号</label>
                         <input type="number" id="tel" autocomplete="off">
-                        <span class="tel-warn tel-err hide"><em></em><i class="icon-warn"></i></span>
+                        <span class="tel-warn tel-err hide"><em>账号或密码错误</em><i class="icon-warn"></i></span>
                     </p>
-
-
                     <p class="p-input pos" id="sendcode" style="display: none;">
                         <label for="veri-code">输入验证码</label>
                         <input type="number" id="veri-code">
@@ -56,7 +54,7 @@
                     <span class="z"><i class="icon-ok-sign boxcol" nullmsg="请同意!"></i></span>
                     <input type="hidden" name="agree" value="1">
                     <div class="Validform_checktip"></div>
-                    <p>我已阅读并接受 <a href="#" target="_brack">《XXXX协议说明》</a></p>
+                    <p>我已阅读并接受 <a href="#" target="_brack" onclick="state()"><span style="color: #1d7db1">《TimeLine协议说明》</span></a></p>
                 </div>
                 <button class="lang-btn">注册</button>
                 <div class="bottom-info">已有账号，<a href="/user/showLogin">马上登录</a></div>
@@ -75,6 +73,11 @@
     <script>window.jQuery || document.write('<script src="/js/jquery-3.3.1.min.js"><\/script>')</script>
     <script type="text/javascript" src="/js/verify.js" ></script>
     <script type="text/javascript">
+        function state(){
+            alert("哪有什么协议呀，不过是最终解释权归网站所有罢了~");
+        }
+
+
         $('#mpanel4').slideVerify({
             type : 2,		//类型
             vOffset : 5,	//误差量，根据需求自行调整

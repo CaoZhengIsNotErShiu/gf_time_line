@@ -23,7 +23,6 @@ public class DateUtil {
     public static SimpleDateFormat formatter = new SimpleDateFormat(pattern);
     public static SimpleDateFormat formatter2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     public static DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(pattern);
-
     public static DateTimeFormatter getDateTimeFormatter() {
         return dateFormatter;
     }
