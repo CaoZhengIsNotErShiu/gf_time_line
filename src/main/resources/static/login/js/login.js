@@ -114,6 +114,7 @@ $(function(){
 	}
 
 	function checkPhone(phone){
+		console.log(phone)
 		var status = true;
 		if (phone == '') {
 			$('.num2-err').removeClass('hide').find("em").text('请输入手机号');
@@ -133,16 +134,12 @@ $(function(){
             async: false,
             data: {phone:phone},
             success:function(data){
-                if (data.status == 500) {
+				console.log(data)
+                if (data.status == 200) {
                     $('.num2-err').addClass('hide');
-                    console.log(data.msg)
-                    // console.log('aa');
-                    // return true;
                 } else {
                     $('.num2-err').removeClass('hide').text(data.msg);
-                    // console.log('bb');
 					status = false;
-					// return false;
                 }
             },
             error:function(){
@@ -168,46 +165,24 @@ $(function(){
 		if (tab == 'account_number') {
 			$(".log-btn").click(function(){
 				// var type = 'phone';
-				var inp = $.trim($('#num').val());
-				var pass = $.md5($.trim($('#pass').val()));
-				if (checkAccount(inp) && checkPass(pass)) {
-					var ldata = {userinp:inp,password:pass};
-					if (!$('.code').hasClass('hide')) {
-						code = $.trim($('#veri').val());
-						if (!checkCode(code)) {
-							return false;
-						}
-						ldata.code = code;
-					}
+				var phone = $.trim($('#num').val());
+				var password = $.trim($('#pass').val());
+				if (checkAccount(phone) && checkPass(password)) {
 					$.ajax({
-			            url: '/dologin',
+			            url: '/user/dologin',
 			            type: 'post',
 			            dataType: 'json',
 			            async: true,
-			            data: ldata,
+			            data: {phone:phone,password:password},
 			            success:function(data){
-			                if (data.code == '0') {
-			                    // globalTip({'msg':'登录成功!','setTime':3,'jump':true,'URL':'http://www.ui.cn'});
-			                    globalTip(data.msg);
-			                } else if(data.code == '2') {
+			                if (data.status == '0') {
+                                window.location.href = "/timelineIndex/showIndex";
+			                } else if(data.status == '2') {
 			                	$(".log-btn").off('click').addClass("off");
 			                    $('.pass-err').removeClass('hide').find('em').text(data.msg);
 			                    $('.pass-err').find('i').attr('class', 'icon-warn').css("color","#d9585b");
-			                    $('.code').removeClass('hide');
-			                    $('.code').find('img').attr('src','/verifyCode?'+Math.random()).click(function(event) {
-			                    	$(this).attr('src', '/verifyCode?'+Math.random());
-			                    });;
 			                    return false;
-			                } else if(data.code == '3') {
-			                	$(".log-btn").off('click').addClass("off");
-			                    $('.img-err').removeClass('hide').find('em').text(data.msg);
-			                    $('.img-err').find('i').attr('class', 'icon-warn').css("color","#d9585b");
-			                    $('.code').removeClass('hide');
-			                    $('.code').find('img').attr('src','/verifyCode?'+Math.random()).click(function(event) {
-			                    	$(this).attr('src', '/verifyCode?'+Math.random());
-			                    });
-			                    return false;
-			                } else if(data.code == '1'){
+			                } else if(data.status == '1'){
 			                	$(".log-btn").off('click').addClass("off");
 			                	$('.num-err').removeClass('hide').find('em').text(data.msg);
 			                	$('.num-err').find('i').attr('class', 'icon-warn').css("color","#d9585b");
@@ -223,6 +198,7 @@ $(function(){
 				}
 			});
 		} else {
+			//电话登录
 			$(".log-btn").click(function(){
 				// var type = 'phone';
 				var phone = $.trim($('#num2').val());
@@ -235,9 +211,40 @@ $(function(){
 			            async: true,
 			            data: {phone:phone,code:pcode},
 			            success:function(data){
-			                if (data.status == '0') {
-			                	// globalTip({'msg':'登录成功!','setTime':3,'jump':true,'URL':'http://www.ui.cn'});
-			                	globalTip(data.msg);
+                            console.log(data)
+                            if (data.status == '0') {
+                                $("#mpanel4").show();
+                                $(".log-btn").off('click').addClass("off");
+                                $('#mpanel4').slideVerify({
+                                    type : 2,		//类型
+                                    vOffset : 5,	//误差量，根据需求自行调整
+                                    vSpace : 5,	//间隔
+                                    imgName : ['1.jpg', '2.jpg'],
+                                    imgSize : {
+                                        width: '300px',
+                                        height: '150px',
+                                    },
+                                    blockSize : {
+                                        width: '40px',
+                                        height: '40px',
+                                    },
+                                    barSize : {
+                                        width : '300px',
+                                        height : '35px',
+                                    },
+                                    ready : function() {
+                                    },
+                                    success : function() {
+                                        //......后续操作
+                                        window.location.href = "/timelineIndex/showIndex";
+                                    },
+                                    error : function() {
+                                        alert('开发者想问问你是不是手残~！');
+                                        // $(".log-btn").show();
+
+                                    }
+                                });
+
 			                } else if(data.status == '1') {
 			                	$(".log-btn").off('click').addClass("off");
 			                    $('.num2-err').removeClass('hide').text(data.msg);

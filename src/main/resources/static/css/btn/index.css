@@ -1,0 +1,69 @@
+@charset 'utf-8';
+html,body {
+			 background: #555555;
+		}
+		
+		.wrap5,
+		.wrap4,
+		.wrap0,
+		.wrap1,
+		.wrap {
+			width: 50px;
+			height: 50px;
+			background: #28292a;
+			margin: 20px auto;
+			box-shadow: 1px 1px 10px #333,-1px -1px 10px #333;
+			cursor: pointer;
+		}
+
+		/*第五个按钮样式*/
+		.wrap5 {
+			position: relative;
+			width: 200px;
+			height: 50px;
+			background: #222;
+			border-radius: 25px/50%;
+			margin: 0 auto;
+			box-shadow: inset 0px -1px 3px #999,inset 0px 1px 3px #000;
+		}
+		.wrap5 span{
+			float: left;
+			display: block;
+			width: 100px;
+			height: 50px;
+			line-height:50px;
+			color: #00a900;
+			text-align: center;
+			font-size: 30px;
+		}
+		.wrap5 div {
+			position: absolute;
+			top: 2px;
+			left: 2px;
+			width:100px;
+			height: 45px;
+			border-radius: 25px/50%;
+			background: #fff;
+
+		}
+		
+		.wrap-con {
+			width: 500px;
+			height: 70px;
+			margin: 20px auto;
+		}
+		.wrap-con > div {
+			float: left;
+			width: 50px;
+			height: 50px;
+			background: #333;
+			border: 10px solid #f0f0f0; 
+			margin: 0px 10px;
+		}
+		.wrap-con > div div {
+			display: none;
+			width: 50px;
+			height: 50px;
+			background: url(../images/19.png) no-repeat;
+			background-size: 100% 100%;
+		}

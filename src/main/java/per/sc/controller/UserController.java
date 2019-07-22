@@ -10,17 +10,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import com.github.qcloudsms.httpclient.HTTPException;
 import org.json.JSONException;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import per.sc.pojo.UserVO;
 import per.sc.service.UserServiceI;
 import per.sc.util.DateUtil;
 import per.sc.util.HttpResult;
+import per.sc.util.MD5Util;
 import per.sc.util.RandomUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -65,7 +63,7 @@ public class UserController {
 
 
     /**
-     * 手机号登陆
+     * 手机号注册
      * @param phone 手机号
      * @param session session
      * @return 返回登录结果
@@ -73,8 +71,8 @@ public class UserController {
     @RequestMapping(value = "pregister",method = RequestMethod.POST)
     @ResponseBody
     public HttpResult pRegister(@RequestParam("phone")String phone,
-                             @RequestParam("code")String code,
-                             HttpSession session){
+                                @RequestParam("code")String code,
+                                HttpSession session){
         HttpResult result = new HttpResult();
         UserVO userVO = null;
         try {
@@ -87,7 +85,7 @@ public class UserController {
                 return result;
             }
             if (userVO != null){
-                result.setStatus(0);
+                result.setStatus(1);
                 result.setMsg("该手机号已经被注册，请直接登录 ~");
             }else{
                 //注册
@@ -96,10 +94,11 @@ public class UserController {
                 user.setUserName("TL_"+date);
                 user.setPhone(phone);
                 //MD5加密搞上
-                user.setPassword("123456");
+                String initPwd = MD5Util.getMD5WithSalt("123456");
+                user.setPassword(initPwd);
                 user.setImage("/38421562074311_.pic.jpg");
                 userService.register(user);
-                result.setStatus(1);
+                result.setStatus(0);
                 result.setMsg("注册成功！ ~");
             }
         } catch (Exception e) {
@@ -107,6 +106,47 @@ public class UserController {
         }
         return result;
     }
+
+
+    /**
+     * 账号密码登录
+     * @return 返回登录结果
+     */
+    @RequestMapping(value = "dologin",method = RequestMethod.POST)
+    @ResponseBody
+    public HttpResult plogin(UserVO user){
+        logger.info("@@1.账号密码登录  plogin start @@");
+        HttpResult result = new HttpResult();
+        UserVO userVO = null;
+        try {
+            //把用户输入的密码md5加密
+            String loginPwd = MD5Util.getMD5WithSalt(user.getPassword());
+            userVO = userService.checkPhone(user.getPhone());
+            if (userVO != null){
+                String mysqlPwd = userVO.getPassword();
+                boolean flag = loginPwd.equals(mysqlPwd);
+                if (flag){
+                    result.setStatus(0);
+                    result.setMsg("登录成功，即将跳转 ~");
+                    //隐藏手机号中间4位，清空用户密码
+                    userVO.setPhone(userVO.getPhone().replaceAll("(\\d{3})\\d{4}(\\d{4})", "$1****$2"));
+                    userVO.setPassword("");
+                    result.setData(userVO);
+                }else{
+                    result.setStatus(1);
+                    result.setMsg("账号/密码出现了错误 ~");
+                }
+            }else{
+                result.setStatus(2);
+                result.setMsg("您还没有注册，请先去注册 ~");
+            }
+        } catch (Exception e) {
+            logger.info("## 1.账号密码登录  plogin err ##",e);
+        }
+        logger.info("@@2.账号密码登录  plogin end @@");
+        return result;
+    }
+
 
     /**
      * 手机号登陆
@@ -127,7 +167,7 @@ public class UserController {
             userVO = userService.checkPhone(phone);
             if (StringUtils.isBlank(codeSession) ||!code.equals(codeSession) ){
                 result.setStatus(2);
-                result.setMsg("验证码错误，请重新获取 ~");
+                result.setMsg("验证码错误，请重新输入 ~");
                 return result;
             }
             if (userVO != null){
@@ -144,6 +184,12 @@ public class UserController {
     }
 
 
+    /**
+     * 生成验证码
+     * @param phone
+     * @param session
+     * @return
+     */
     @RequestMapping(value = "getCode",method = RequestMethod.POST)
     @ResponseBody
     public HttpResult getCode(@RequestParam("phone")String phone,HttpSession session){
@@ -161,7 +207,7 @@ public class UserController {
             String[] phoneNumbers = {phone};
 //            SmsSingleSenderResult result = ssender.send(0, "86", phoneNumbers[0],
 //                    "验证码：6379，用于注册TimeLine帐号，1分钟内有效。如非本人操作，请忽略。", "", "");
-           // System.out.println(result);
+            // System.out.println(result);
             result.setStatus(0);
             result.setMsg("获取验证码成功");
         } catch (Exception e) {
@@ -192,7 +238,7 @@ public class UserController {
             result.setMsg("手机号已经被注册，直接去登录~");
         }else {
             result.setStatus(500);
-            result.setMsg("可注册 ~");
+            result.setMsg("手机号没有注册，请先注册 ~");
         }
         logger.info("@@2.检查手机号是否注册 checkPhone end @@");
         return result;

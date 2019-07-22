@@ -91,21 +91,16 @@ $(function(){
             async: false,
             data: {phone:phone},
             success:function(data){
-            	console.log(data.status)
+            	console.log(data+"======"+phone)
                 if (data.status == 500) {
                     $('.tel-err').addClass('hide');
-                    // console.log('aa');
-                    // return true;
                 } else {
                     $('.tel-err').removeClass('hide').text(data.msg);
-                    // console.log('bb');
 					status = false;
-					// return false;
                 }
             },
             error:function(){
             	status = false;
-                // return false;
             }
         });
 		return status;
@@ -124,10 +119,8 @@ $(function(){
 	// 登录点击事件
 	function sendBtn(){
 			$(".lang-btn").click(function(){
-				// var type = 'phone';
 				var phone = $.trim($('#tel').val());
 				var pcode = $.trim($('#veri-code').val());
-				console.log(phone+pcode);
 				if (checkPhone(phone) && checkPass(pcode)) {
 					$.ajax({
 			            url: '/user/pregister',
@@ -136,14 +129,43 @@ $(function(){
 			            async: true,
 			            data: {phone:phone,code:pcode},
 			            success:function(data){
-			                if (data.code == '0') {
-			                	// globalTip({'msg':'登录成功!','setTime':3,'jump':true,'URL':'http://www.ui.cn'});
-			                	globalTip(data.msg);
-			                } else if(data.code == '1') {
+			            	console.log(data)
+			                if (data.status == '0') {
+                                $("#mpanel4").show();
+                                $(".lang-btn").off('click').addClass("off");
+                                $('#mpanel4').slideVerify({
+                                    type : 2,		//类型
+                                    vOffset : 5,	//误差量，根据需求自行调整
+                                    vSpace : 5,	//间隔
+                                    imgName : ['1.jpg', '2.jpg'],
+                                    imgSize : {
+                                        width: '300px',
+                                        height: '150px',
+                                    },
+                                    blockSize : {
+                                        width: '40px',
+                                        height: '40px',
+                                    },
+                                    barSize : {
+                                        width : '300px',
+                                        height : '35px',
+                                    },
+                                    ready : function() {
+                                    },
+                                    success : function() {
+                                        alert('注册成功，请登录~！');
+                                        //......后续操作
+                                        window.location.href="/user/showLogin";
+                                    },
+                                    error : function() {
+                                        alert('Are you kidding me ?');
+                                    }
+                                });
+			                } else if(data.status == '1') {
 			                	$(".lang-btn").off('click').addClass("off");
-			                    $('.num2-err').removeClass('hide').text(data.msg);
+			                    $('.tel-err').removeClass('hide').text(data.msg);
 			                    return false;
-			                } else if(data.code == '2') {
+			                } else if(data.status == '2') {
 			                	$(".lang-btn").off('click').addClass("off");
 			                    $('.error').removeClass('hide').text(data.msg);
 			                    return false;
