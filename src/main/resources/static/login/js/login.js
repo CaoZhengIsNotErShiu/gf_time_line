@@ -159,7 +159,14 @@ $(function(){
 			return true;
 		}
 	}
-
+    //设置cookie
+    function setCookie(name,value)
+    {
+        var Days = 30;
+        var exp = new Date();
+        exp.setTime(exp.getTime() + Days*24*60*60*1000);
+		document.cookie=name+"="+value+";expires=" + exp.toGMTString()+"; path=/";
+    }
 	// 登录点击事件
 	function sendBtn(){
 		if (tab == 'account_number') {
@@ -176,7 +183,9 @@ $(function(){
 			            data: {phone:phone,password:password},
 			            success:function(data){
 			                if (data.status == '0') {
-                                window.location.href = "/timelineIndex/showIndex";
+                                var name = data.data.userName
+                                setCookie("time_line",name);
+                                window.location.href = "http://10.233.1.240:8088/timelineIndex/showIndex";
 			                } else if(data.status == '2') {
 			                	$(".log-btn").off('click').addClass("off");
 			                    $('.pass-err').removeClass('hide').find('em').text(data.msg);
@@ -234,9 +243,11 @@ $(function(){
                                     },
                                     ready : function() {
                                     },
-                                    success : function() {
+                                    success : function(data) {
                                         //......后续操作
-                                        window.location.href = "/timelineIndex/showIndex";
+                                        var name = data.data.userName;
+                                        setCookie("time_line",name);
+                                        window.location.href = "http://10.233.1.240:8088/timelineIndex/showIndex";
                                     },
                                     error : function() {
                                         alert('开发者想问问你是不是手残~！');

@@ -21,4 +21,13 @@ public class DetailController {
     public String showDetail(){
         return "detail/detail";
     }
+
+    /**
+     * 获取阅读更多界面
+     * @return 返回界面地址
+     */
+    @RequestMapping(value = "showTop", method = RequestMethod.GET)
+    public String showTop(){
+        return "top/index";
+    }
 }

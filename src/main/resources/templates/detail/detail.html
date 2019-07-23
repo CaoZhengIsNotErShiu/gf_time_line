@@ -7,6 +7,7 @@
 	<title>阅读更多</title>
 	<link rel="stylesheet" type="text/css" href="/css/normalize.css" />
 	<link rel="stylesheet" type="text/css" href="/css/htmleaf-demo.css">
+	<link rel="stylesheet" type="text/css" href="/css/uindex.css">
 	<link rel="stylesheet" href="/css/detail.css">
 	<link rel="stylesheet" href="/js/dist/MODALit.min.css">
 	<!--[if lte IE 9]>
@@ -15,17 +16,22 @@
 	<script type="text/javascript" src="/js/jquery-1.8.3.min.js"></script>
 	<![endif]-->
 
+	<script src="/js/detail.js"></script>
 	<script type="text/javascript" src="/js/jquery-1.8.3.min.js"></script>
 	<script src="/js/dist/MODALit.min.js"></script>
-	<script src="/js/detail.js"></script>
 </head>
 <body>
 <div class="htmleaf-container">
-	<header class="htmleaf-header">
+	<div id="page"></div>
+	<header class="htmleaf-header" >
 		<h1>荣曜秋菊，华茂春松 <span>Write the code. Change the world.</span></h1>
-		<div class="htmleaf-links">
-			<a class="htmleaf-icon icon-htmleaf-home-outline" href="http://10.233.1.240:8088/upload/showTimeLine" title="首页" target="_parent"><span> 首页</span></a>
-			<a class="htmleaf-icon icon-htmleaf-arrow-forward-outline" href="http://10.233.1.240:8088/timelineIndex/showIndex" title="去看看别人的故事" target="_parent"><span> 去看看别人的故事</span></a>
+		<div class="htmleaf-links" >
+			<a class="htmleaf-icon" style="background-image:url('/images/icon/all.png');"
+			   href="http://10.233.1.240:8088/timelineIndex/showIndex" title="去看看别人的时间线"
+			   target="_parent"><span> 去看看别人的故事</span></a>
+			<a class="htmleaf-icon" style="background-image:url('/images/icon/mine.png');"
+			   href="http://10.233.1.240:8088/upload/showTimeLine"
+			   title="我的时间线" target="_parent"><span> </span></a>
 		</div>
 	</header>
 	<section id="demo">
@@ -37,16 +43,17 @@
 					&nbsp;&nbsp;
 				</p>
 				<ul id="ulImage" style="text-align:center;">
-					<li><img data-src="http://10.233.1.240:8088/image/23c07878-f05f-48e1-8462-ef43da4086c6.jpg"
-							 src="https://source.unsplash.com/2o_2syCZS5M/200x200"
-							 data-caption="新垣结衣21" class="demo-gallery">
-					</li>
+					<li ><img style="width: 560px;height: 720px;" data-src="http://10.233.1.240:8088/image/a6c9b514-dcf5-4af2-945f-2a816ef0b183.jpg"
+								  src="http://10.233.1.240:8088/image/a6c9b514-dcf5-4af2-945f-2a816ef0b183.jpg"
+								  data-caption="这是一个bug，或者是个彩蛋，看你怎么理解，程序员说他是处理不掉（很大声~）~" class="demo-gallery">
+				    </li>
 				</ul>
 			</div>
 		</div>
 	</section>
 
 	<script>
+        $("#page").load("/detail/showTop");
         $(function() {
             //init最新
             var ID = getUrlParam('id');
@@ -67,17 +74,18 @@
                     var data = req.data.imageUrl;
                     var caption = req.data.title +req.data.createTime;
                     var dg = "demo-gallery";
-
-                    html+='<li><img style="height: 300px; width:260px;" data-src='+data+' ' +
-						'src='+data+' ' +
-						'data-caption='+caption+' ' +
-						'class='+dg+'>  </li><br>';
+                    var arr = data.split('@');
+                    for(var i in arr){
+                        html+='<li><img style="height: 400px; width:520px; margin-left: 10px" data-src='+arr[i]+' ' +
+                            'src='+arr[i]+' ' +
+                            'data-caption='+caption+' ' +
+                            'class='+dg+'>  </li>';
+                    }
 					if (req.data.imageUrl != null){
                         $("#ulImage").html(html);
 					}else{
                         $("#ulImage").hide();
 					}
-
                 },
                 error: function () {
                     //请求出错处理

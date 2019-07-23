@@ -48,7 +48,7 @@ public class TimeLineController {
      */
     @RequestMapping(value = "showSend", method = RequestMethod.GET)
     public String showSend(){
-        return "html/msg";
+        return "send/msg";
     }
 
 
@@ -58,7 +58,7 @@ public class TimeLineController {
      */
     @RequestMapping(value = "showTimeLine", method = RequestMethod.GET)
     public String showTimeLine(){
-        return "upload/index";
+        return "mine/index";
     }
 
     /**

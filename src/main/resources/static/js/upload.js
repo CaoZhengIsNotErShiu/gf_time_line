@@ -3,8 +3,6 @@ $("#uploadBtn").click(function(event) {
                 $("#addBtn").trigger('click');
             }
 });
-
-
         var uploader = new plupload.Uploader({ // 创建实例的改造方法
             runtimes: "html5, flash, silverlight, html4", // 上传插件初始化选用方法的优先级顺序
             browse_button: "addBtn",                   // 上传按钮
@@ -69,7 +67,7 @@ $("#uploadBtn").click(function(event) {
         function delimg(o) {
             console.log("delete");
             var src = $(o).prev().attr("src");
-            $.post('/upload/deleteImage?path='+src, function(data) {
+            $.post('/mine/deleteImage?path='+src, function(data) {
                 /*optional stuff to do after success */
                 if(data.status == 1) {
                     if ($("#pic-list").children("li").length==10) {
