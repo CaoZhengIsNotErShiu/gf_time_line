@@ -1,5 +1,6 @@
 package per.sc.mapper;
 
+import per.sc.pojo.ArticleVO;
 import per.sc.pojo.TimeLineVO;
 
 import java.util.List;
@@ -32,4 +33,10 @@ public interface UploadMapper {
      * @return 根据id查询时间线
      */
     TimeLineVO queryTimeLineInfoById(Integer id);
+
+    /**
+     * 发表文章
+     * @param article
+     */
+    void pusArticle(ArticleVO article);
 }

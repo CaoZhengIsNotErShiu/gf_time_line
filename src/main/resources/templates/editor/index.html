@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>wangEditor 菜单和编辑器区域分离</title>
+    <style type="text/css">
+        .toolbar {
+            border: 1px solid #ccc;
+        }
+        .text {
+            border: 1px solid #ccc;
+            height: 400px;
+        }
+
+        #divs {
+            position: absolute;
+            top: 30%;
+            left: 40%;
+            margin: -150px 0 0 -200px;
+            width: 720px;
+            height: 888px;
+        }
+    </style>
+</head>
+<body >
+<div id="divs">
+
+
+<div id="div1" class="toolbar" style="width: 720px;">
+</div>
+<div style="padding: 5px 0; color: #ccc">中间隔离带</div>
+<div id="div2" class="text" style="width: 720px;"> <!--可使用 min-height 实现编辑区域自动增加高度-->
+    <p>请输入内容</p>
+</div>
+</div>
+<script type="text/javascript" src="/js/editor/wangEditor.js"></script>
+<script type="text/javascript">
+    var E = window.wangEditor
+    var editor1 = new E('#div1', '#div2')  // 两个参数也可以传入 elem 对象，class 选择器
+    editor1.create()
+</script>
+</body>
+</html>

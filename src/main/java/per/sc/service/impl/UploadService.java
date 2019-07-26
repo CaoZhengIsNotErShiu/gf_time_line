@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import per.sc.mapper.UploadMapper;
+import per.sc.pojo.ArticleVO;
 import per.sc.pojo.TimeLineVO;
 import per.sc.service.UploadServiceI;
 
@@ -51,5 +52,15 @@ public class UploadService implements UploadServiceI {
     @Transactional(rollbackFor = Exception.class)
     public TimeLineVO queryTimeLineInfoById(Integer id) {
         return uploadMapper.queryTimeLineInfoById(id);
+    }
+
+    /**
+     * 发布文章
+     * @param article
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void pusArticle(ArticleVO article) {
+        uploadMapper.pusArticle(article);
     }
 }

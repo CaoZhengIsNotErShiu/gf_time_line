@@ -17,6 +17,21 @@
     </resultMap>
 
 
+    <insert id="pusArticle" parameterType="per.sc.pojo.ArticleVO" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into article_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="data != null"> data, </if>
+            create_time,
+            update_time,
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="data != null">  #{data,jdbcType=VARCHAR}, </if>
+            now(),
+            now(),
+        </trim>
+    </insert>
+
+
     <insert id="addTimeLine"  parameterType="per.sc.pojo.TimeLineVO">
         insert into time_line_info
         <trim prefix="(" suffix=")" suffixOverrides=",">

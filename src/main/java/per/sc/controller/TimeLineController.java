@@ -31,7 +31,7 @@ import java.util.UUID;
  * @Date: 19/7/4 下午1:50
  * @Version 1.0
  */
-@RequestMapping("upload")
+@RequestMapping("mine")
 @Controller
 public class TimeLineController {
 
@@ -86,7 +86,7 @@ public class TimeLineController {
 
 
     /**
-     * 查询所有时间线
+     * 查询我所有时间线
      * @param pn 当前页
      * @return 时间线结果
      */
