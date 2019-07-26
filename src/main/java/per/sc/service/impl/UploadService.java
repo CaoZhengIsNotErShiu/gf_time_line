@@ -63,4 +63,15 @@ public class UploadService implements UploadServiceI {
     public void pusArticle(ArticleVO article) {
         uploadMapper.pusArticle(article);
     }
+
+    /**
+     * 根据id查找文章
+     * @param id
+     * @return
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public ArticleVO queryArticle(Integer id) {
+        return uploadMapper.queryArticle(id);
+    }
 }

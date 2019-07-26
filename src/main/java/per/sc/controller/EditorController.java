@@ -96,4 +96,29 @@ public class EditorController {
         logger.info("@@2.发布文章 pusArticle end @@");
         return result;
     }
+
+
+
+    /**
+     * 根据id查找文章
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "queryArticle", method = RequestMethod.POST)
+    @ResponseBody
+    public HttpResult queryArticle(@RequestParam(value="id") Integer id){
+        logger.info("@@1.根据id查找文章 queryArticle start @@");
+        HttpResult result = new HttpResult();
+        try {
+            ArticleVO article  = uploadService.queryArticle(id);
+            result.setStatus(200);
+            result.setData(article);
+        } catch (Exception e) {
+            logger.error("@@1.根据id查找文章 queryArticle err @@",e);
+            result.setStatus(500);
+            result.setMsg("查找失败 ~");
+        }
+        logger.info("@@2.根据id查找文章 queryArticle end @@");
+        return result;
+    }
 }

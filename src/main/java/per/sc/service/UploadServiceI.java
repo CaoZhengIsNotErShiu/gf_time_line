@@ -39,4 +39,11 @@ public interface UploadServiceI {
      * @param article
      */
     void pusArticle(ArticleVO article);
+
+    /**
+     * 根据id查找文章
+     * @param id
+     * @return
+     */
+    ArticleVO queryArticle(Integer id);
 }
