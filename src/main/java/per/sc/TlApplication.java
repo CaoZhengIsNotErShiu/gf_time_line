@@ -3,6 +3,7 @@ package per.sc;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * @Disc
@@ -14,7 +15,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @MapperScan("per.sc.mapper")
 public class TlApplication {
 
-    public static void main(String[] args) {
+    public  static void main(String[] args) {
         SpringApplication.run(TlApplication.class, args);
     }
 }

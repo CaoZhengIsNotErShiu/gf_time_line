@@ -1,3 +1,7 @@
+server:
+  port: 8088
+  #context-path: /
+
 spring:
   application:
     name: TL
@@ -7,6 +11,21 @@ spring:
     multipart:
       max-file-size: 30MB
       max-request-size: 100MB
+  activemq:  #activemq
+    broker-url: tcp://localhost:61616
+    user: admin
+    password: admin
+  jms:
+    #springboot 默认开启点对点，订阅需要手动开启
+    #pub-sub-domain: false #false = Queue true = Topic
+    pub-sub-domain: true #false = Queue true = Topic
+
+#自己定义队列名称
+#myqueue: time-line-queue
+#自己定义主题名称
+mytopic: time-line-topic
+
+
 #  http:
 #    multipart:
 #      max-file-size: 10Mb
@@ -42,9 +61,7 @@ disruptor:
   waitStrategy: TIMEOUT
 
 
-server:
-  port: 8088
-  #context-path: /
+
 
 
 ---

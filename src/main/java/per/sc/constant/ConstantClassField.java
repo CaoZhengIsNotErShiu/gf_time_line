@@ -31,5 +31,7 @@ public final class ConstantClassField {
 /*    public static final String IMAGE_URL_PATH = "http://10.233.1.34:8088/image/";*/
 
     public static final String IMAGE_URL_PATH = "http://10.233.1.240:8088/image/";
+
+    public static final String ACTIVEMQ_URL = "tcp://localhost:61616";
 }
 
