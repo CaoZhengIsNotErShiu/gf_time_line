@@ -11,6 +11,7 @@ import lombok.Data;
 public class ArticleVO {
 
     private Integer id;
+    private String userName;
     private String data;
     private String createTime;
     private String updateTime;

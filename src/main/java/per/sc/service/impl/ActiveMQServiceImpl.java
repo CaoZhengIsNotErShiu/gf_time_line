@@ -36,7 +36,7 @@ public class ActiveMQServiceImpl implements ActiveMQServiceI {
         //AUTO_ACKNOWLEDGE 自动确认
         Session session = connection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
         //主题名
-        Topic topic = session.createTopic("topic://user_01,topic://user_02");
+        Topic topic = session.createTopic(messageVO.getTopicName());
         TopicSubscriber durableSubscriber = session.createDurableSubscriber(topic, "restart..");
         //启动
         connection.start();

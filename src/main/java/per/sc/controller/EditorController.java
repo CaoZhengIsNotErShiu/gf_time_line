@@ -72,21 +72,19 @@ public class EditorController {
 
     /**
      * 发布文章
-     * @param data
+     * @param articleVO
      * @return
      */
     @RequestMapping(value = "pusArticle", method = RequestMethod.POST)
     @ResponseBody
-    public HttpResult pusArticle(@RequestParam(value="data") String data){
+    public HttpResult pusArticle(ArticleVO articleVO){
         logger.info("@@1.发布文章 pusArticle start @@");
         HttpResult result = new HttpResult();
-        ArticleVO article = new ArticleVO();
         try {
-            article.setData(data);
-            uploadService.pusArticle(article);
-            System.out.println(article.getId());
+            uploadService.pusArticle(articleVO);
+            System.out.println(articleVO.getId());
             result.setStatus(200);
-            result.setData(article.getId());
+            result.setData(articleVO.getId());
             result.setMsg("发布成功 ~");
         } catch (Exception e) {
             logger.error("@@1.发布文章 pusArticle err @@",e);
