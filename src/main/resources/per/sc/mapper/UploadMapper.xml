@@ -19,6 +19,8 @@
     <resultMap id="articleMap" type="per.sc.pojo.ArticleVO">
         <id property="id" column="id" jdbcType="INTEGER" />
         <result property="userName" column="user_name" jdbcType="VARCHAR" />
+        <result property="thematicUrl" column="thematic_url" jdbcType="VARCHAR" />
+        <result property="title" column="title" jdbcType="VARCHAR" />
         <result property="data" column="data" jdbcType="VARCHAR" />
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
@@ -32,12 +34,16 @@
         insert into article_info
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="userName != null"> user_name, </if>
+            <if test="thematicUrl != null"> thematic_url, </if>
+            <if test="title != null"> title, </if>
             <if test="data != null"> data, </if>
             create_time,
             update_time,
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="userName != null">  #{userName,jdbcType=VARCHAR}, </if>
+            <if test="thematicUrl != null">  #{thematicUrl,jdbcType=VARCHAR}, </if>
+            <if test="title != null">  #{title,jdbcType=VARCHAR}, </if>
             <if test="data != null">  #{data,jdbcType=VARCHAR}, </if>
             now(),
             now(),
