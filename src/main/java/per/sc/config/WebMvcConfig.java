@@ -1,12 +1,17 @@
 package per.sc.config;
 
+import java.io.File;
+import java.nio.charset.Charset;
+import java.util.List;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.util.ResourceUtils;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
-
-import java.io.File;
+import per.sc.constant.ConstantClassField;
 
 /**
  * 版    权:  Bulin Technologies Co., Ltd. Copyright YYYY-YYYY,  All rights reserved
@@ -28,7 +33,7 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
         registry.addResourceHandler("/**")
                 .addResourceLocations("classpath:/static/");
         registry.addResourceHandler("/image/**")
-//                .addResourceLocations("file:/Users/Macx/Desktop/素材/");
+                .addResourceLocations("file:"+ ConstantClassField.TEMP_PATH)
                 .addResourceLocations("file:"+tempPath)
                 .addResourceLocations("file:"+uploadPath);
     }
@@ -43,6 +48,8 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
             .allowedMethods("GET", "HEAD", "POST","PUT", "DELETE", "OPTIONS")
             .allowCredentials(true).maxAge(3600);
     }
+
+
 
 }
 

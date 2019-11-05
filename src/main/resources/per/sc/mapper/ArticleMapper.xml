@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="per.sc.mapper.ArticleMapper">
+
+    <!--根据用户名获取用户所有文章-->
+    <select id="queryUserArticleByUserName"  resultType="per.sc.pojo.ArticleVO">
+        SELECT
+            id,
+            title,
+            data,
+            create_time as createTime
+        FROM
+            article_info
+        WHERE
+            user_name = #{userId}
+    </select>
+
+
+
+</mapper>

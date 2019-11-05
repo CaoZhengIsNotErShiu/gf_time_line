@@ -125,6 +125,8 @@
     </dependency>
 
 
+
+
     <!--添加热部署-->
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -166,6 +168,25 @@
       <version>2.1.5.RELEASE</version>
     </dependency>
 
+
+    <dependency>
+      <groupId>org.apache.solr</groupId>
+      <artifactId>solr-solrj</artifactId>
+      <version>7.5.0</version>
+    </dependency>
+
+    <!--用来获取富文本中的img-->
+    <dependency>
+      <groupId>org.jsoup</groupId>
+      <artifactId>jsoup</artifactId>
+      <version>1.11.2</version>
+    </dependency>
+
+    <!-- aop -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-aop</artifactId>
+    </dependency>
 
   </dependencies>
 
@@ -223,6 +244,10 @@
                   <source>1.8</source>
                   <target>1.8</target>
               </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
           </plugin>
       </plugins>
   </build>

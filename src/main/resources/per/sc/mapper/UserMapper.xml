@@ -13,6 +13,38 @@
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
     </resultMap>
 
+    <!-- 根据用户名查询用户信息 -->
+    <select id="queryUserByName" resultType="per.sc.pojo.UserVO">
+        SELECT
+            image
+        FROM
+            user_info
+        WHERE
+            user_name =  #{userName}
+    </select>
+
+
+    <select id="queryUserIdByUserId" resultType="per.sc.pojo.UserVO">
+        SELECT
+            id,
+            user_name AS userName,
+            image
+        FROM
+            user_info
+        WHERE
+            id =  #{customerId}
+    </select>
+
+
+    <!--根据用户名查询用户id-->
+    <select id="queryUserIdByUserName" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT
+            id
+        FROM
+            user_info
+        WHERE
+            user_name = #{createUser,jdbcType=VARCHAR}
+    </select>
 
     <insert id="register"  parameterType="per.sc.pojo.UserVO">
         insert into user_info
@@ -46,5 +78,42 @@
     <select id="queryTimeLineInfoById" resultMap="userMap">
         select * from time_line_info where id = #{id,jdbcType=INTEGER}
     </select>
+
+    <select id="queryUserInfoByUserId" parameterType="java.lang.Integer" resultType="per.sc.pojo.dto.UserFollArtDTO">
+        SELECT
+            ui.user_name AS userName,
+            ui.signature,
+            ui.image,
+            (
+                SELECT
+                    count(1)
+                FROM
+                    article_info ai
+                WHERE
+                    ai.user_name = ui.id
+            ) AS articles,
+            (
+                SELECT
+                    count(1)
+                FROM
+                    follow_info fi
+                WHERE
+                    fi.by_follower_id = ui.id
+            ) AS follows,
+            (
+                SELECT
+                    count(1)
+                FROM
+                    follow_info
+                WHERE
+                    follower_id = #{loginId}
+                AND by_follower_id = #{userId}
+            ) as isFollow
+        FROM
+            user_info ui
+        WHERE
+            ui.id = #{userId}
+    </select>
+
 
 </mapper>

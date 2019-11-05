@@ -77,6 +77,7 @@ public class ActiveMQServiceImpl implements ActiveMQServiceI {
         //CLIENT_ACKNOWLEDGE  手动签收
         Session session = connection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
 
+        //主题名
         Topic topic = session.createTopic(messageVO.getTopicName());
         //5. 创建生产者
         MessageProducer producer = session.createProducer(topic);
@@ -84,6 +85,7 @@ public class ActiveMQServiceImpl implements ActiveMQServiceI {
         producer.setDeliveryMode(DeliveryMode.PERSISTENT);
         //启动
         connection.start();
+        //主题内容
         TextMessage textMessage = session.createTextMessage(messageVO.getTopicKey());
         producer.send(textMessage);
         producer.close();

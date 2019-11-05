@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="per.sc.mapper.MenuMapper">
+
+
+    <!--用户表-->
+    <resultMap id="indexMap" type="per.sc.pojo.MenuVO">
+        <id property="menuId" column="menu_id" jdbcType="VARCHAR" />
+        <result property="menuText" column="menu_text" jdbcType="VARCHAR" />
+        <result property="menuUrl" column="menu_url" jdbcType="VARCHAR" />
+        <result property="parentId" column="menu_parent_id" jdbcType="VARCHAR" />
+        <result property="menuLevel" column="menu_level" jdbcType="VARCHAR" />
+        <result property="createTime" column="menu_create_time" jdbcType="TIMESTAMP" />
+    </resultMap>
+
+    <!--获取所有菜单-->
+    <select id="getMenu"   resultMap="indexMap">
+        SELECT
+            *
+        FROM
+            menu_info
+    </select>
+
+    <select id="queryMenuIdByMenuName" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT
+            menu_id
+        FROM
+            menu_info
+        WHERE
+            menu_text = #{menuName}
+    </select>
+
+    <!-- 根据菜单id查询菜单名 -->
+    <select id="queryMenuNameByMenuId" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT
+        menu_text
+        FROM
+        menu_info
+        WHERE
+        menu_id = #{menuName}
+    </select>
+
+
+</mapper>

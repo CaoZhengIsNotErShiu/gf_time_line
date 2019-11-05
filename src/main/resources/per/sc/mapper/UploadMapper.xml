@@ -22,12 +22,27 @@
         <result property="thematicUrl" column="thematic_url" jdbcType="VARCHAR" />
         <result property="title" column="title" jdbcType="VARCHAR" />
         <result property="data" column="data" jdbcType="VARCHAR" />
+        <result property="firstMenu" column="art_first_menu" jdbcType="VARCHAR" />
+        <result property="subMenu" column="art_sub_menu" jdbcType="VARCHAR" />
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
     </resultMap>
 
     <select id="queryArticle" resultMap="articleMap">
-        select * from article_info where id = #{id,jdbcType=INTEGER}
+        SELECT
+            ai.id,
+            ai.thematic_url,
+            ai.title,
+            ai.DATA,
+            ai.art_first_menu,
+            ai.art_sub_menu,
+            ai.create_time,
+            ai.update_time,
+            ui.user_name
+        FROM
+            article_info ai
+        LEFT JOIN user_info ui ON ai.user_name = ui.id
+           where ai.id = #{id,jdbcType=INTEGER}
     </select>
 
     <insert id="pusArticle" parameterType="per.sc.pojo.ArticleVO" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
@@ -37,6 +52,8 @@
             <if test="thematicUrl != null"> thematic_url, </if>
             <if test="title != null"> title, </if>
             <if test="data != null"> data, </if>
+            <if test="firstMenu != null"> art_first_menu, </if>
+            <if test="subMenu != null"> art_sub_menu, </if>
             create_time,
             update_time,
         </trim>
@@ -45,6 +62,8 @@
             <if test="thematicUrl != null">  #{thematicUrl,jdbcType=VARCHAR}, </if>
             <if test="title != null">  #{title,jdbcType=VARCHAR}, </if>
             <if test="data != null">  #{data,jdbcType=VARCHAR}, </if>
+            <if test="firstMenu != null"> #{firstMenu,jdbcType=VARCHAR}, </if>
+            <if test="subMenu != null"> #{subMenu,jdbcType=VARCHAR}, </if>
             now(),
             now(),
         </trim>

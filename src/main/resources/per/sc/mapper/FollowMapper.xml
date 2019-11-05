@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="per.sc.mapper.FollowMapper">
+
+    <insert id="follow"  >
+        insert into follow_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="followUserName != null"> follower_id, </if>
+            <if test="byUserName != null"> by_follower_id, </if>
+            create_time,
+            update_time,
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="followUserName != null">  #{followUserName}, </if>
+            <if test="byUserName != null">  #{byUserName}, </if>
+            now(),
+            now(),
+        </trim>
+    </insert>
+
+    <select id="queryIsFollow" resultType="java.lang.Integer">
+        SELECT
+            count(1)
+        FROM
+            follow_info
+        WHERE
+            follower_id = #{followUserName}
+        AND by_follower_id = #{byUserName}
+    </select>
+
+    <delete id="followCancel">
+        DELETE
+        FROM
+            follow_info
+        WHERE
+            follower_id = #{followUserName}
+        AND by_follower_id = #{byUserName}
+    </delete>
+
+
+    <select id="queryFollowByUserId" parameterType="java.lang.Integer" resultType="per.sc.pojo.dto.UserFollArtDTO" >
+        SELECT
+        	fi.by_follower_id as id
+        FROM
+            follow_info fi
+        WHERE
+            fi.follower_id = #{userId}
+    </select>
+</mapper>

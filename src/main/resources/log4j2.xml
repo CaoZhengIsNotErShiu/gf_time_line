@@ -1,6 +1,7 @@
 <Configuration status="WARN" monitorInterval="300">
     <properties>
-        <property name="LOG_HOME">/Volumes/WIN7/log4j/judicial</property>
+        <!--<property name="LOG_HOME">/Volumes/WIN7/log4j/judicial</property>-->
+        <property name="LOG_HOME">/home/log4j/timeline</property>
     </properties>
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">

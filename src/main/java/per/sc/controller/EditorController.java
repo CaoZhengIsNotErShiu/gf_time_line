@@ -12,12 +12,18 @@ import org.springframework.web.multipart.MultipartFile;
 import per.sc.constant.ConstantClassField;
 import per.sc.pojo.ArticleVO;
 import per.sc.pojo.ImageVO;
+import per.sc.pojo.MessageVO;
+import per.sc.service.ActiveMQServiceI;
+import per.sc.service.MenuServiceI;
 import per.sc.service.UploadServiceI;
+import per.sc.service.UserServiceI;
 import per.sc.util.HttpResult;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
+
+import static per.sc.util.SolrUtils.addIndex;
 
 /**
  *
@@ -33,6 +39,15 @@ public class EditorController {
 
     @Autowired
     private UploadServiceI uploadService;
+
+    @Autowired
+    private UserServiceI userService;
+
+    @Autowired
+    private ActiveMQServiceI mqService;
+
+    @Autowired
+    private MenuServiceI menuService;
     /**
      * 显示编辑页面
      * @return
@@ -54,7 +69,8 @@ public class EditorController {
         logger.info("@@1.上传图片 uploadImage start @@");
         HttpResult result = new HttpResult();
         String path = UUID.randomUUID().toString() + ".jpg";
-        String filePath = ConstantClassField.TEMP_PATH+ path;
+        String filePath = ConstantClassField.TEMP_PATH + path;
+
         if (!file.isEmpty()){
             try {
                 file.transferTo(new File(filePath));
@@ -81,8 +97,29 @@ public class EditorController {
         logger.info("@@1.发布文章 pusArticle start @@");
         HttpResult result = new HttpResult();
         try {
+            //查询用户id
+            String userId = userService.queryUserIdByUserName(articleVO.getUserName());
+            //查询菜单id
+            String firstMenu = menuService.queryMenuIdByMenuName(articleVO.getFirstMenu());
+            String subMenu = menuService.queryMenuIdByMenuName(articleVO.getSubMenu());
+            //插入
+            articleVO.setUserName(userId);
+            articleVO.setFirstMenu(firstMenu);
+            articleVO.setSubMenu(subMenu);
+
             uploadService.pusArticle(articleVO);
-            System.out.println(articleVO.getId());
+            Integer id = Integer.valueOf(articleVO.getId());
+            //根据id获取发布的文章
+            ArticleVO art = uploadService.queryArticle(id);
+            //同步到solr
+            addIndex(art);
+            //同步到mq中去
+            MessageVO messageVO = new MessageVO();
+            //作者id作为主题名
+            messageVO.setTopicName(userId);
+            //文章id作为主题内容
+            messageVO.setTopicKey(art.getId());
+            mqService.sendTopicPersist(messageVO);
             result.setStatus(200);
             result.setData(articleVO.getId());
             result.setMsg("发布成功 ~");
@@ -109,6 +146,10 @@ public class EditorController {
         HttpResult result = new HttpResult();
         try {
             ArticleVO article  = uploadService.queryArticle(id);
+            String firstMenu = menuService.queryMenuNameByMenuId(article.getFirstMenu());
+            String subMenu = menuService.queryMenuNameByMenuId(article.getSubMenu());
+            article.setFirstMenu(firstMenu);
+            article.setSubMenu(subMenu);
             result.setStatus(200);
             result.setData(article);
         } catch (Exception e) {

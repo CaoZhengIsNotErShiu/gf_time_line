@@ -14,7 +14,12 @@ import org.springframework.web.bind.annotation.*;
 
 import com.github.qcloudsms.httpclient.HTTPException;
 import org.json.JSONException;
+import org.springframework.web.multipart.MultipartFile;
+import per.sc.annotation.SystemControllerLog;
+import per.sc.constant.ConstantClassField;
+import per.sc.pojo.ImageVO;
 import per.sc.pojo.UserVO;
+import per.sc.pojo.dto.UserFollArtDTO;
 import per.sc.service.UserServiceI;
 import per.sc.util.DateUtil;
 import per.sc.util.HttpResult;
@@ -23,8 +28,10 @@ import per.sc.util.RandomUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.File;
 import java.io.IOException;
 import java.util.Random;
+import java.util.UUID;
 
 /**
  *
@@ -42,26 +49,6 @@ public class UserController {
     @Autowired
     private UserServiceI userService;
 
-
-    /**
-     * 展示登录界面
-     * @return 返回登录界面
-     */
-    @RequestMapping("showLogin")
-    public String showLogin(){
-        return "login/index";
-    }
-
-    /**
-     * 展示注册界面
-     * @return 返回注册界面
-     */
-    @RequestMapping("showReg")
-    public String showReg(){
-        return "login/reg";
-    }
-
-
     /**
      * 手机号注册
      * @param phone 手机号
@@ -70,6 +57,7 @@ public class UserController {
      */
     @RequestMapping(value = "pregister",method = RequestMethod.POST)
     @ResponseBody
+    @SystemControllerLog(description = "手机号注册")
     public HttpResult pRegister(@RequestParam("phone")String phone,
                                 @RequestParam("code")String code,
                                 HttpSession session){
@@ -114,6 +102,7 @@ public class UserController {
      */
     @RequestMapping(value = "dologin",method = RequestMethod.POST)
     @ResponseBody
+    @SystemControllerLog(description = "账号密码登录")
     public HttpResult plogin(UserVO user){
         logger.info("@@1.账号密码登录  plogin start @@");
         HttpResult result = new HttpResult();
@@ -156,6 +145,7 @@ public class UserController {
      */
     @RequestMapping(value = "plogin",method = RequestMethod.POST)
     @ResponseBody
+    @SystemControllerLog(description = "手机号登陆")
     public HttpResult plogin(@RequestParam("phone")String phone,
                              @RequestParam("code")String code,
                              HttpSession session){
@@ -192,6 +182,7 @@ public class UserController {
      */
     @RequestMapping(value = "getCode",method = RequestMethod.POST)
     @ResponseBody
+    @SystemControllerLog(description = "生成验证码")
     public HttpResult getCode(@RequestParam("phone")String phone,HttpSession session){
         HttpResult result = new HttpResult();
         try {
@@ -205,9 +196,9 @@ public class UserController {
             SmsSingleSender ssender = new SmsSingleSender(appid, appkey);
             // 需要发送短信的手机号码
             String[] phoneNumbers = {phone};
-//            SmsSingleSenderResult result = ssender.send(0, "86", phoneNumbers[0],
-//                    "验证码：6379，用于注册TimeLine帐号，1分钟内有效。如非本人操作，请忽略。", "", "");
-            // System.out.println(result);
+            SmsSingleSenderResult result1 = ssender.send(0, "86", phoneNumbers[0],
+                    "验证码为："+ code +"，您正在注册成为TimeLine平台会员，感谢您的支持！", "", "");
+            System.out.println(result1);
             result.setStatus(0);
             result.setMsg("获取验证码成功");
         } catch (Exception e) {
@@ -223,6 +214,7 @@ public class UserController {
      */
     @RequestMapping(value = "checkPhone",method = RequestMethod.POST)
     @ResponseBody
+    @SystemControllerLog(description = "检查手机号是否注册")
     public HttpResult checkPhone(@RequestParam("phone") String phone){
         logger.info("@@1.检查手机号是否注册 checkPhone start @@");
         //判断号码是否被注册
@@ -243,4 +235,88 @@ public class UserController {
         logger.info("@@2.检查手机号是否注册 checkPhone end @@");
         return result;
     }
+
+
+    /**
+     * 根据用户名查询用户信息
+     * @param userName 用户名
+     * @return 返回
+     */
+    @RequestMapping(value = "queryUserByName",method = RequestMethod.POST)
+    @ResponseBody
+    @SystemControllerLog(description = "根据用户名查询用户信息")
+    public HttpResult queryUserByName(@RequestParam("userName") String userName){
+        logger.info("@@1.根据用户名查询用户信息 queryUserByName start @@");
+        //判断号码是否被注册
+        UserVO vo = null;
+        try {
+            vo = userService.queryUserByName(userName);
+        } catch (Exception e) {
+            logger.error("##1.根据用户名查询用户信息 queryUserByName err ##", e);
+        }
+        HttpResult result = new HttpResult();
+        result.setStatus(200);
+        result.setData(vo);
+        logger.info("@@2.根据用户名查询用户信息 queryUserByName end @@");
+        return result;
+    }
+
+
+    /**
+     * 上传用户图像
+     * @param file
+     * @return
+     */
+    @RequestMapping(value = "uploadUserImage", method = RequestMethod.POST)
+    @ResponseBody
+    @SystemControllerLog(description = "上传用户图像")
+    public HttpResult uploadUserImage(@RequestParam("file") MultipartFile file){
+        logger.info("@@1.上传用户图像 uploadUserImage start @@");
+        HttpResult result = new HttpResult();
+        String path = UUID.randomUUID().toString() + ".jpg";
+        String filePath = ConstantClassField.TEMP_PATH + path;
+        if (!file.isEmpty()){
+            try {
+                file.transferTo(new File(filePath));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        ImageVO pojo = new ImageVO();
+        pojo.setUrl(ConstantClassField.IMAGE_URL_PATH+path);
+        result.setData(pojo);
+        logger.info("@@2.上传用户图像 uploadUserImage end @@");
+        return result;
+    }
+
+    /**
+     * 查询用户文章数，关注度
+     * @param userName 用户id
+     * @param loginName 登录id
+     * @return
+     */
+    @RequestMapping(value = "queryUserInfoByUserId", method = RequestMethod.POST)
+    @ResponseBody
+    @SystemControllerLog(description = "查询用户文章数，关注度")
+    public HttpResult queryUserInfoByUserId(String userName,String loginName){
+        logger.info("@@1.查询用户文章数，关注度 queryUserInfoByUserId start @@");
+        HttpResult result = new HttpResult();
+        try {
+            String userId = userService.queryUserIdByUserName(userName);
+            //判断用户是否登录
+            String loginId = "0";
+            if (StringUtils.isNotBlank(loginName)){
+                loginId = userService.queryUserIdByUserName(loginName);
+            }
+            UserFollArtDTO dto =  userService.queryUserInfoByUserId(Integer.valueOf(userId),Integer.valueOf(loginId));
+            result.setStatus(200);
+            result.setData(dto);
+        } catch (Exception e) {
+            result.setStatus(500);
+            logger.error("## 1.查询用户文章数，关注度 queryUserInfoByUserId err ##", e);
+        }
+        logger.info("@@2.查询用户文章数，关注度 queryUserInfoByUserId end @@");
+        return result;
+    }
+
 }
