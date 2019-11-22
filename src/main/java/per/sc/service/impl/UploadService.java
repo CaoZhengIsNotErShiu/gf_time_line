@@ -24,37 +24,6 @@ public class UploadService implements UploadServiceI {
     private UploadMapper uploadMapper;
 
     /**
-     * 发布时间信息
-     * @param timeLine
-     */
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void addTimeLine(TimeLineVO timeLine) {
-        uploadMapper.addTimeLine(timeLine);
-    }
-
-    /**
-     * 查询所有时间线
-     * @return
-     */
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public List<TimeLineVO> queryAllTimeLineInfo() {
-        return uploadMapper.queryAllTimeLineInfo();
-    }
-
-    /**
-     * 根据id查询时间线
-     * @param id 时间线id
-     * @return 返回单条时间线
-     */
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public TimeLineVO queryTimeLineInfoById(Integer id) {
-        return uploadMapper.queryTimeLineInfoById(id);
-    }
-
-    /**
      * 发布文章
      * @param article
      */
@@ -73,5 +42,14 @@ public class UploadService implements UploadServiceI {
     @Transactional(rollbackFor = Exception.class)
     public ArticleVO queryArticle(Integer id) {
         return uploadMapper.queryArticle(id);
+    }
+
+    /**
+     * 修改文本，根据id
+     * @param articleVO
+     */
+    @Override
+    public void updateArticleById(ArticleVO articleVO) {
+        uploadMapper.updateArticleById(articleVO);
     }
 }

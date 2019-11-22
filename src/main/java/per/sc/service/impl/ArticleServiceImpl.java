@@ -28,4 +28,24 @@ public class ArticleServiceImpl implements ArticleServiceI {
     public List<ArticleVO> queryUserArticleByUserName(String userId) {
         return articleMapper.queryUserArticleByUserName(userId);
     }
+
+    /**
+     * 根据id查询推荐文章
+     * @param id 文章id
+     * @return
+     */
+    @Override
+    public List<ArticleVO> queryArticleById(Integer id) {
+        return articleMapper.queryArticleById(id);
+    }
+
+    /**
+     * 根据文章id，查询文章上下两篇文章
+     * @param id 文章id
+     * @return
+     */
+    @Override
+    public List<ArticleVO> queryNext(Integer id) {
+        return articleMapper.queryNext(id);
+    }
 }

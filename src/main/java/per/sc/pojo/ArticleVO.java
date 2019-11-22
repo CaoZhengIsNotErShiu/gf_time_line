@@ -71,7 +71,10 @@ public class ArticleVO {
      * 用户头像
      */
     private String image;
-
+    /**
+     * 标签
+     */
+    private String text;
     @Field("createTime")
     @DateTimeFormat(pattern ="yyyy-MM-dd HH:mm")
     @JsonFormat(pattern="yyyy-MM-dd HH:mm",timezone="GMT+8")

@@ -17,4 +17,18 @@ public interface ArticleServiceI {
      * @return
      */
     List<ArticleVO> queryUserArticleByUserName(String userId);
+
+    /**
+     * 根据id查询推荐文章
+     * @param id 文章id
+     * @return
+     */
+    List<ArticleVO> queryArticleById(Integer id);
+
+    /**
+     * 根据文章id，查询文章上下两篇文章
+     * @param id
+     * @return
+     */
+    List<ArticleVO> queryNext(Integer id);
 }

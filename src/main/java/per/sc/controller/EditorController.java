@@ -1,5 +1,6 @@
 package per.sc.controller;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import per.sc.annotation.SystemControllerLog;
 import per.sc.constant.ConstantClassField;
 import per.sc.pojo.ArticleVO;
 import per.sc.pojo.ImageVO;
@@ -21,9 +23,12 @@ import per.sc.util.HttpResult;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import static per.sc.util.SolrUtils.addIndex;
+import static per.sc.util.SolrUtils.update;
 
 /**
  *
@@ -48,14 +53,7 @@ public class EditorController {
 
     @Autowired
     private MenuServiceI menuService;
-    /**
-     * 显示编辑页面
-     * @return
-     */
-    @RequestMapping(value = "showEditor", method = RequestMethod.GET)
-    public String showDetail(){
-        return "editor/index";
-    }
+
 
 
     /**
@@ -65,6 +63,7 @@ public class EditorController {
      */
     @RequestMapping(value = "uploadImage", method = RequestMethod.POST)
     @ResponseBody
+    @SystemControllerLog(description = "上传图片")
     public HttpResult upload(@RequestParam("file") MultipartFile file){
         logger.info("@@1.上传图片 uploadImage start @@");
         HttpResult result = new HttpResult();
@@ -93,6 +92,7 @@ public class EditorController {
      */
     @RequestMapping(value = "pusArticle", method = RequestMethod.POST)
     @ResponseBody
+    @SystemControllerLog(description = "发布文章")
     public HttpResult pusArticle(ArticleVO articleVO){
         logger.info("@@1.发布文章 pusArticle start @@");
         HttpResult result = new HttpResult();
@@ -106,20 +106,42 @@ public class EditorController {
             articleVO.setUserName(userId);
             articleVO.setFirstMenu(firstMenu);
             articleVO.setSubMenu(subMenu);
-
-            uploadService.pusArticle(articleVO);
-            Integer id = Integer.valueOf(articleVO.getId());
-            //根据id获取发布的文章
-            ArticleVO art = uploadService.queryArticle(id);
-            //同步到solr
-            addIndex(art);
+            //mq主键
+            String mqId = "0";
+            if (StringUtils.isEmpty(articleVO.getId())){
+                //插入
+                uploadService.pusArticle(articleVO);
+                Integer id = Integer.valueOf(articleVO.getId());
+                //根据id获取发布的文章
+                ArticleVO art = uploadService.queryArticle(id);
+                //同步到solr
+                addIndex(art);
+                mqId = art.getId();
+            }else{
+                //更新
+                uploadService.updateArticleById(articleVO);
+                Integer solrId = Integer.valueOf(articleVO.getId());
+                ArticleVO art = uploadService.queryArticle(solrId);
+                //同步到solr
+                Map<String, Object> maps = new HashMap(7);
+                maps.put("id", art.getId()+"");
+                maps.put("title", art.getTitle());
+                maps.put("data", art.getData());
+                maps.put("createTime", art.getCreateTime());
+                maps.put("updateTime", art.getUpdateTime());
+                maps.put("comments", art.getComments());
+                maps.put("likenum", art.getLikenum());
+                update(maps);
+                mqId = articleVO.getId();
+            }
             //同步到mq中去
-            MessageVO messageVO = new MessageVO();
-            //作者id作为主题名
-            messageVO.setTopicName(userId);
-            //文章id作为主题内容
-            messageVO.setTopicKey(art.getId());
-            mqService.sendTopicPersist(messageVO);
+//            MessageVO messageVO = new MessageVO();
+//            //作者id作为主题名
+//            messageVO.setTopicName(userId);
+//            //文章id作为主题内容
+//            messageVO.setTopicKey(mqId);
+//            mqService.sendTopicPersist(messageVO);
+
             result.setStatus(200);
             result.setData(articleVO.getId());
             result.setMsg("发布成功 ~");

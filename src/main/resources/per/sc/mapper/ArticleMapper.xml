@@ -15,8 +15,56 @@
             article_info
         WHERE
             user_name = #{userId}
+        ORDER BY
+	        create_time DESC
+    </select>
+
+    <select id="queryArticleById" resultType="per.sc.pojo.ArticleVO">
+        SELECT
+            id,title,data
+        FROM
+            article_info
+        WHERE
+            art_sub_menu = (
+                SELECT
+                    art_sub_menu
+                FROM
+                    article_info
+                WHERE
+                    id = #{id}
+            )
+        ORDER BY
+            create_time DESC
+        LIMIT 0,
+         4
     </select>
 
 
+    <select id="queryNext" resultType="per.sc.pojo.ArticleVO">
+        SELECT
+            id,
+            title
+        FROM
+          article_info
+        WHERE
+        id IN (
+        (
+        SELECT
+          max(id)
+        FROM
+          article_info
+        WHERE
+        id &lt; #{id}
+        ),
+        (
+        SELECT
+          min(id)
+        FROM
+          article_info
+        WHERE
+        id > #{id}
+        )
+        )
+    </select>
 
 </mapper>

@@ -31,16 +31,18 @@ public class SolrUtils {
 //        delIndexByID("10");
 //        addIndex();
 
-//        Map<String, String> maps = new HashMap<String, String>();
-//        maps.put("userName","小王");
-//        maps.put("title","汽车");
-//        maps.put("data","北京");
-//        updateMultiData("9527",maps);
-//
-//
-        String fieldName = "comments";
-        Object fieldValue = "12";
-        updateSingleData("7",fieldName,fieldValue);
+        Map<String, String> maps = new HashMap();
+        maps.put("id","35");
+        maps.put("title","测试更新77777");
+        maps.put("data","北京");
+
+//        update(maps);
+//        updateMultiData(vo);
+
+
+//        String fieldName = "title";
+//        Object fieldValue = "测试Solr-更新";
+//        updateSingleData("7",fieldName,fieldValue);
 //
 //        delIndexByID(id);
 
@@ -77,41 +79,6 @@ public class SolrUtils {
         document.addField("likenum", article.getLikenum());
         solr.add(document);
         solr.commit();
-    }
-
-    /**
-     * @Author：sks
-     * @Description：更新索引中多个属性数据
-     * @Date：
-     * @id：索引ID
-     * @maps：属性名称，属性值键值对
-     */
-    public static void updateMultiData(ArticleVO article) throws SolrServerException,IOException{
-
-        Map<String, String> maps = new HashMap<String, String>();
-        maps.put("thematicUrl", article.getThematicUrl());
-        maps.put("title", article.getTitle());
-        maps.put("data", article.getData());
-        maps.put("createTime", article.getCreateTime()+"");
-        maps.put("updateTime", article.getUpdateTime()+"");
-        maps.put("comments", article.getComments()+"");
-        maps.put("likenum", article.getLikenum()+"");
-
-
-        Set<String> keys = maps.keySet();
-        SolrInputDocument doc = new SolrInputDocument();
-        doc.addField("id", article.getId());
-        for(String key : keys)
-        {
-            HashMap<String, Object> oper = new HashMap<String, Object>();
-            oper.put("set", maps.get(key));
-            doc.addField(key, oper);
-        }
-
-        UpdateResponse rsp = solr.add(doc);
-        UpdateResponse rspCommit = solr.commit();
-        System.out.println("commit doc to index" + " result:" + rspCommit.getStatus() + " Qtime:" + rspCommit.getQTime());
-
     }
 
     /**
@@ -190,6 +157,42 @@ public class SolrUtils {
             art.setTitle(title.get(0));
         }
         return articleVOList;
+    }
+
+    /**
+     * 更新Solr中的文档，Map对象中必须存在id键用于定位doc文档
+     * Map中其他的键值对是修改的内容，Key<String>代表数据域名称,
+     * Value<Object>代表修改值
+     * @param map
+     */
+    public static boolean update(Map<String, Object> map) {
+        Init();
+        try
+        {
+            String id = (String)map.get("id");
+            SolrInputDocument doc = new SolrInputDocument();
+            doc.addField("id", id);
+            for(String k:map.keySet())
+            {
+                //数据域Id忽略更新
+                if(!"id".equals(k))
+                {
+                    Map map2 = new HashMap();
+                    map2.put("set", map.get(k));
+                    doc.addField(k, map2);
+                }
+            }
+            solr.add(doc);
+            UpdateResponse resp = solr.commit();
+            if(resp.getStatus() == 0){
+                return true;
+            }
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        return false;
     }
 
 }

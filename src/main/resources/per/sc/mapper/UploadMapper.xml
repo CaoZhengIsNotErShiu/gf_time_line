@@ -3,18 +3,6 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="per.sc.mapper.UploadMapper">
-    <!--用户表-->
-    <resultMap id="upload" type="per.sc.pojo.TimeLineVO">
-        <id property="id" column="id" jdbcType="INTEGER" />
-        <result property="userId" column="user_id" jdbcType="INTEGER" />
-        <result property="title" column="title" jdbcType="VARCHAR" />
-        <result property="content" column="content" jdbcType="VARCHAR" />
-        <result property="imageUrl" column="image_url" jdbcType="VARCHAR" />
-        <result property="color" column="color" jdbcType="VARCHAR" />
-        <result property="picture" column="picture" jdbcType="VARCHAR" />
-        <result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
-        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
-    </resultMap>
 
     <resultMap id="articleMap" type="per.sc.pojo.ArticleVO">
         <id property="id" column="id" jdbcType="INTEGER" />
@@ -67,39 +55,30 @@
             now(),
             now(),
         </trim>
+
     </insert>
 
-
-    <insert id="addTimeLine"  parameterType="per.sc.pojo.TimeLineVO">
-        insert into time_line_info
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="userId != null"> user_id, </if>
-            <if test="title != null"> title, </if>
-            <if test="content != null"> content, </if>
-            <if test="imageUrl != null"> image_url, </if>
-            <if test="color != null"> color, </if>
-            <if test="picture != null"> picture, </if>
-            create_time,
-            update_time,
+    <update id="updateArticleById">
+        UPDATE
+        article_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="title!=null and '' != title">
+                title=  #{title},
+            </if>
+            <if test="data!=null and '' != data">
+                data=  #{data},
+            </if>
+            <if test="firstMenu!=null and '' != firstMenu">
+                art_first_menu=  #{firstMenu},
+            </if>
+            <if test="subMenu!=null and '' != subMenu">
+                art_sub_menu=  #{subMenu},
+            </if>
+            update_time=  now(),
         </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="userId != null"> #{userId,jdbcType=INTEGER}, </if>
-            <if test="title != null">  #{title,jdbcType=VARCHAR}, </if>
-            <if test="content != null">   #{content,jdbcType=VARCHAR}, </if>
-            <if test="imageUrl != null">  #{imageUrl,jdbcType=VARCHAR}, </if>
-            <if test="color != null">  #{color,jdbcType=VARCHAR}, </if>
-            <if test="picture != null">  #{picture,jdbcType=VARCHAR}, </if>
-            now(),
-            now(),
-        </trim>
-    </insert>
+        where id= #{id}
+    </update>
 
-    <select id="queryAllTimeLineInfo" resultMap="upload">
-        select * from time_line_info
-    </select>
 
-    <select id="queryTimeLineInfoById" resultMap="upload">
-        select * from time_line_info where id = #{id,jdbcType=INTEGER}
-    </select>
 
 </mapper>

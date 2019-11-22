@@ -14,27 +14,6 @@ import java.util.List;
 public interface UploadServiceI {
 
     /**
-     * 添加时间线信息
-     *
-     * @param timeLine
-     * @return
-     */
-    void addTimeLine(TimeLineVO timeLine);
-
-    /**
-     * 查询所有时间线
-     * @return
-     */
-    List<TimeLineVO> queryAllTimeLineInfo();
-
-    /**
-     * 根据id查询时间线
-     * @param id 时间线id
-     * @return 根据id查询时间线
-     */
-    TimeLineVO queryTimeLineInfoById(Integer id);
-
-    /**
      * 发布文章
      * @param article
      */
@@ -46,4 +25,10 @@ public interface UploadServiceI {
      * @return
      */
     ArticleVO queryArticle(Integer id);
+
+    /**
+     *  修改文本，根据id
+     * @param articleVO
+     */
+    void updateArticleById(ArticleVO articleVO);
 }

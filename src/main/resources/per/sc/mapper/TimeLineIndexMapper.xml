@@ -14,6 +14,7 @@
         <result property="comments" column="comments" jdbcType="VARCHAR" />
         <result property="likenum" column="likenum" jdbcType="VARCHAR" />
         <result property="articles" column="articles" jdbcType="VARCHAR" />
+        <result property="text" column="menu_text" jdbcType="VARCHAR" />
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
     </resultMap>
@@ -95,16 +96,54 @@
                     like_num_info
                 WHERE
                     article_id = a.id
-            ) AS likenum
+            ) AS likenum,
+            mi.menu_text
         FROM
             (article_info a)
         LEFT JOIN t_comment b ON b.content_id = a.id
         LEFT JOIN user_info ui ON ui.id = a.user_name
+        LEFT JOIN menu_info mi ON a.art_sub_menu = mi.menu_id
+        <if test="index == 'note' ">
+        WHERE
+        a.art_first_menu = 2
+        </if>
+        <if test="index == 'technology' ">
+            WHERE
+            a.art_first_menu = 3
+        </if>
+        <if test="index == 'jotting' ">
+            WHERE
+            a.art_sub_menu = 7
+        </if>
+        <if test="index == 'jour' ">
+            WHERE
+            a.art_sub_menu = 8
+        </if>
+        <if test="index == 'show' ">
+            WHERE
+            a.art_sub_menu = 9
+        </if>
+        <if test="index == 'front' ">
+            WHERE
+            a.art_sub_menu = 10
+        </if>
+        <if test="index == 'after' ">
+            WHERE
+            a.art_sub_menu = 11
+        </if>
+        <if test="index == 'liunx' ">
+            WHERE
+            a.art_sub_menu = 12
+        </if>
+        <if test="index == 'other' ">
+            WHERE
+            a.art_sub_menu = 13
+        </if>
         GROUP BY
             a.id
-        <if test="index == 'index' ">
+
             ORDER BY a.create_time DESC
-        </if>
+
 
     </select>
 
