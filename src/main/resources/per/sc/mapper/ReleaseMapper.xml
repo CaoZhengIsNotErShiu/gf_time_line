@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="per.sc.mapper.ReleaseMapper">
+    <!--用户表-->
+    <resultMap id="releaseMap" type="per.sc.pojo.ReleaseVO">
+        <id property="id" column="release_id" jdbcType="INTEGER" />
+        <result property="context" column="release_context" jdbcType="VARCHAR" />
+        <result property="createTime" column="release_create_time" jdbcType="TIMESTAMP" />
+    </resultMap>
+
+    <!-- 获取所有版本信息 -->
+    <select id="queryAllReleaseInfo" resultMap="releaseMap">
+        SELECT
+            *
+        FROM
+            release_info;
+    </select>
+
+    <!-- 获取所有年份信息 -->
+    <select id="queryAllReleaseYear" resultType="java.lang.String">
+        SELECT DISTINCT
+            YEAR (release_create_time) AS 'year'
+        FROM
+            release_info;
+    </select>
+
+    <!--<insert id="register"  parameterType="per.sc.pojo.UserVO">-->
+        <!--insert into user_info-->
+        <!--<trim prefix="(" suffix=")" suffixOverrides=",">-->
+            <!--<if test="userName != null"> user_name, </if>-->
+            <!--<if test="password != null"> password, </if>-->
+            <!--<if test="phone != null"> phone, </if>-->
+            <!--<if test="image != null"> image, </if>-->
+            <!--create_time,-->
+            <!--update_time,-->
+        <!--</trim>-->
+        <!--<trim prefix="values (" suffix=")" suffixOverrides=",">-->
+            <!--<if test="userName != null"> #{userName,jdbcType=VARCHAR}, </if>-->
+            <!--<if test="password != null">  #{password,jdbcType=VARCHAR}, </if>-->
+            <!--<if test="phone != null">   #{phone,jdbcType=VARCHAR}, </if>-->
+            <!--<if test="image != null">  #{image,jdbcType=VARCHAR}, </if>-->
+            <!--now(),-->
+            <!--now(),-->
+        <!--</trim>-->
+    <!--</insert>-->
+
+
+
+
+
+
+</mapper>

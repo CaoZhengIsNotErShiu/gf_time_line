@@ -78,7 +78,7 @@ public class EditorController {
             }
         }
         ImageVO pojo = new ImageVO();
-        pojo.setUrl(ConstantClassField.IMAGE_URL_PATH+path);
+        pojo.setUrl(File.separator+path);
         result.setData(pojo);
         logger.info("@@2.上传图片 uploadImage end @@");
         return result;
