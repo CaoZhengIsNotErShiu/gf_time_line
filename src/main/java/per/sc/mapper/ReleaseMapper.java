@@ -23,4 +23,9 @@ public interface ReleaseMapper {
      */
     List<String> queryAllReleaseYear();
 
+    /**
+     * 发布版本更新信息
+     * @param release
+     */
+    void addReleaseInfo(ReleaseVO release);
 }

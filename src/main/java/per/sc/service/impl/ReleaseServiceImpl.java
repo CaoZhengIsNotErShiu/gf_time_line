@@ -28,10 +28,18 @@ public class ReleaseServiceImpl implements ReleaseServiceI {
     public ReleaseListVO queryAllReleaseInfo() {
         List<String> year = releaseMapper.queryAllReleaseYear();
         List<ReleaseVO> release = releaseMapper.queryAllReleaseInfo();
-        System.out.println(release.toString());
         ReleaseListVO listVO = new ReleaseListVO();
         listVO.setYear(year);
         listVO.setRelList(release);
         return listVO;
+    }
+
+    /**
+     * 发布版本更新信息
+     * @param release
+     */
+    @Override
+    public void addReleaseInfo(ReleaseVO release) {
+        releaseMapper.addReleaseInfo(release);
     }
 }

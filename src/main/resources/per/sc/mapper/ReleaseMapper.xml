@@ -16,6 +16,7 @@
             *
         FROM
             release_info;
+
     </select>
 
     <!-- 获取所有年份信息 -->
@@ -25,6 +26,19 @@
         FROM
             release_info;
     </select>
+
+    <insert id="addReleaseInfo" parameterType="per.sc.pojo.ReleaseVO">
+        INSERT INTO release_info (
+            release_context,
+            release_create_time
+        )
+        VALUES
+            (
+              #{context},
+              now()
+            );
+
+    </insert>
 
     <!--<insert id="register"  parameterType="per.sc.pojo.UserVO">-->
         <!--insert into user_info-->

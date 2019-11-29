@@ -1,6 +1,7 @@
 package per.sc.service;
 
 import per.sc.pojo.ReleaseListVO;
+import per.sc.pojo.ReleaseVO;
 
 /**
  *
@@ -14,4 +15,10 @@ public interface ReleaseServiceI {
      * @return
      */
     ReleaseListVO queryAllReleaseInfo();
+
+    /**
+     * 发布版本更新信息
+     * @param release
+     */
+    void addReleaseInfo(ReleaseVO release);
 }

@@ -32,4 +32,17 @@ public class ReleaseController {
         result.setData(listVO);
         return result;
     }
+
+    /**
+     * 发布版本更新信息
+     * @param release
+     * @return
+     */
+    @RequestMapping("addRelease")
+    public HttpResult addReleaseInfo(ReleaseVO release){
+        HttpResult result = new HttpResult();
+        releaseServiceI.addReleaseInfo(release);
+        result.setStatus(200);
+        return result;
+    }
 }

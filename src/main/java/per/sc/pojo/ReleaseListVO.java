@@ -5,7 +5,9 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * Created by Administrator on 2019/11/28.
+ *
+ * @author Administrator
+ * @date 2019/11/28
  */
 @Data
 public class ReleaseListVO {
