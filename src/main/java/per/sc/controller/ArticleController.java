@@ -42,7 +42,7 @@ public class ArticleController {
     private TimeLineIndexServiceI indexService;
 
     /**
-     * 根据用户名获取用户所有文章
+     * 根据用户名获取用户所有文章 13
      * @return
      */
     @RequestMapping(value = "queryUserArticleByUserName", method = RequestMethod.POST)
