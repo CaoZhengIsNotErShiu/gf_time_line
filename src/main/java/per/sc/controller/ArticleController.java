@@ -6,10 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import per.sc.pojo.ArticleVO;
 import per.sc.service.ArticleServiceI;
 import per.sc.service.TimeLineIndexServiceI;
@@ -149,5 +146,7 @@ public class ArticleController {
         logger.info("## 2. 根据文章id，查询文章上下两篇文章 queryNext end ##");
         return result;
     }
+
+
 
 }

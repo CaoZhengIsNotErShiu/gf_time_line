@@ -16,10 +16,10 @@ public class MD5Util {
 
     private static final String SALT = "ILoveYou";
 
-    public static void main(String[] args) {
-        String md5WithSalt = getMD5WithSalt("123456");
-        System.out.println(md5WithSalt);
-    }
+//    public static void main(String[] args) {
+//        String md5WithSalt = getMD5WithSalt("123456");
+//        System.out.println(md5WithSalt);
+//    }
 
     /**
      * 获取加盐的MD5字符串

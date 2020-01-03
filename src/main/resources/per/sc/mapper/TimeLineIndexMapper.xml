@@ -105,7 +105,7 @@
         LEFT JOIN menu_info mi ON a.art_sub_menu = mi.menu_id
         <if test="index == 'note' ">
         WHERE
-        a.art_first_menu = 2
+          a.art_first_menu = 2
         </if>
         <if test="index == 'technology' ">
             WHERE
@@ -141,10 +141,7 @@
         </if>
         GROUP BY
             a.id
-
             ORDER BY a.create_time DESC
-
-
     </select>
 
 

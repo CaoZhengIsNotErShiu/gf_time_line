@@ -31,4 +31,78 @@ public interface ArticleServiceI {
      * @return
      */
     List<ArticleVO> queryNext(Integer id);
+
+    /**
+     * 查询主页数据
+     * @return
+     */
+    List<ArticleVO> queryIndexInfo();
+
+    /**
+     * 查询文章细节
+     * @param list art
+     * @param userId 用户id
+     * @return
+     */
+    List<ArticleVO> queryArtDetail(List<ArticleVO> list,String userId);
+
+    /**
+     * 查询昨天发布的文章
+     * @return
+     */
+    List<ArticleVO> queryYesterdayArt();
+
+//    /**
+//     * 查询后端文章
+//     * @return
+//     */
+//    List<ArticleVO> queryAfterInfo();
+//
+//    /**
+//     * 查询前端文章
+//     * @return
+//     */
+//    List<ArticleVO> queryFrontInfo();
+//
+//    /**
+//     * 查询笔记文章
+//     * @return
+//     */
+//    List<ArticleVO> queryJottingInfo();
+//
+//    /**
+//     * 查询日记文章
+//     * @return
+//     */
+//    List<ArticleVO> queryJourInfo();
+//
+//    /**
+//     * 查询liunx文章
+//     * @return
+//     */
+//    List<ArticleVO> queryLiunxInfo();
+//
+//    /**
+//     * 查询note文章
+//     * @return
+//     */
+//    List<ArticleVO> queryNoteInfo();
+//
+//    /**
+//     * 查询other文章
+//     * @return
+//     */
+//    List<ArticleVO> queryOtherInfo();
+//
+//    /**
+//     * 查询show文章
+//     * @return
+//     */
+//    List<ArticleVO> queryShowInfo();
+//
+//    /**
+//     * 查询technology文章
+//     * @return
+//     */
+//    List<ArticleVO> queryTechnologyInfo();
 }

@@ -1,6 +1,8 @@
 server:
   port: 8088
   #context-path: /
+  tomcat:
+        basedir: /root/time_line/temp
 
 
 spring:
@@ -54,8 +56,6 @@ spring:
 #myqueue: time-line-queue
 #自己定义主题名称
 mytopic: time-line-topic
-
-
 
 
 #  http:

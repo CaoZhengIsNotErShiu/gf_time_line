@@ -21,6 +21,8 @@ public interface TimeLineIndexServiceI  {
      */
     List<ArticleVO> queryAllTimeLineInfo(String index, Integer userId);
 
+
+
     /**
      * 插入评论
      * @param commentVO

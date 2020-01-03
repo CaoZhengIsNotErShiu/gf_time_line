@@ -17,13 +17,10 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import per.sc.annotation.SystemControllerLog;
 import per.sc.annotation.SystemServiceLog;
 import per.sc.util.IpAddressUtil;
-import per.sc.util.JacksonUtil;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.lang.reflect.Method;
-import java.util.Date;
 
 /**
  * Title: SystemControllerLog

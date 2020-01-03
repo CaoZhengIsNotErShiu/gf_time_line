@@ -9,16 +9,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import per.sc.annotation.SystemControllerLog;
 import per.sc.pojo.ArticleVO;
 import per.sc.pojo.CommentVO;
+import per.sc.service.ArticleServiceI;
 import per.sc.service.TimeLineIndexServiceI;
 import per.sc.service.UserServiceI;
-import per.sc.util.HtmlToText;
 import per.sc.util.HttpResult;
+import per.sc.util.RedisUtil;
 
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -39,6 +42,13 @@ public class TimeLineIndexController {
     @Autowired
     private UserServiceI userService;
 
+    @Autowired
+    private ArticleServiceI artService;
+
+    @Autowired
+    private RedisUtil redisUtil;
+
+
 
     /**
      * 获取所有用户的时间线
@@ -47,38 +57,47 @@ public class TimeLineIndexController {
     @RequestMapping(value = "queryAllTimeLineInfo", method = RequestMethod.POST)
     @ResponseBody
     @SystemControllerLog(description = "获取所有用户的时间线")
-    public HttpResult queryAllTimeLineInfo(String userName,String index,Integer pageNum){
+    public HttpResult queryAllTimeLineInfo(String userName,String index,@RequestParam(value="pageNum",defaultValue="1")Integer pageNum){
+        long start = System.currentTimeMillis();
         logger.info("## 1. 获取所有用户的时间线 queryAllTimeLineInfo start ##");
         HttpResult result = new HttpResult();
+//        index =  StringUtils.isEmpty(index) ? "index" : index;
+//        List<Object> lists = redisUtil.lGet("index", 1, 10);
+//        if (lists.size() != 0){
+//            result.setStatus(200);
+//            for (Object obj: lists) {
+//                result.setData(obj);
+//            }
+//            long end = System.currentTimeMillis();
+//            System.out.println(end - start);
+//            return result;
+//        }
+
         try {
             String userId = "0";
             if(StringUtils.isNotBlank(userName)){
                  userId = userService.queryUserIdByUserName(userName);
             }
-            PageHelper.startPage(pageNum,5);
+            PageHelper.startPage(pageNum,20);
             List<ArticleVO> articleVOList =  indexService.queryAllTimeLineInfo(index,Integer.valueOf(userId));
 
-            PageInfo pageInfo = new PageInfo(articleVOList,5);
+            PageInfo pageInfo = new PageInfo(articleVOList,20);
             List<ArticleVO> list = pageInfo.getList();
-            for ( ArticleVO art : list) {
-                Integer count = indexService.queryUserLikeNumByUserIdAndArticleId(userId,art.getId());
-                //把富文本中的img拿出来做首页展示
-                List<String> data = HtmlToText.getImageSrc(art.getData());
-                if(data!=null && !data.isEmpty()){
-                //取第一张即可
-                    art.setThematicUrl(data.get(0).toString());
-                }
-                //去除富文本标签，只要文本内容
-                String text = HtmlToText.StripHT(art.getData());
-                art.setData(text);
-                art.setUserLikeNum(count);
-            }
+
+//            redisUtil.lSet(index,list,1000*60*60);
+            List<ArticleVO> detail = artService.queryArtDetail(list, userId);
+            pageInfo.setList(detail);
+
             result.setStatus(200);
             result.setData(pageInfo);
+//            redisUtil.sSetAndTime("queryAllTimeLineInfo",1000*60,pageInfo);
         } catch (Exception e) {
             logger.error("@@ 1. 获取所有用户的时间线 queryAllTimeLineInfo err @@",e);
         }
         logger.info("## 2. 获取所有用户的时间线 queryAllTimeLineInfo end ##");
+        long end = System.currentTimeMillis();
+        System.out.println(end - start);
+
         return result;
     }
 
@@ -179,4 +198,7 @@ public class TimeLineIndexController {
 //        logger.info("## 2. 回复用户评论 replyUserCommentByCommentId end ##");
 //        return result;
 //    }
+
+
+
 }

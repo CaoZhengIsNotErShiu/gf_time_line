@@ -1,6 +1,7 @@
 package per.sc.util;
 
-import org.thymeleaf.util.StringUtils;
+
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @Disc

@@ -31,4 +31,18 @@ public interface ArticleMapper {
      * @return
      */
     List<ArticleVO> queryNext(Integer id);
+
+    /**
+     * art
+     * @return
+     */
+    List<ArticleVO> queryIndexInfo();
+
+    List<ArticleVO> queryAfterInfo();
+
+    /**
+     * 查询昨天发布的文章
+     * @return
+     */
+    List<ArticleVO> queryYesterdayArt();
 }
