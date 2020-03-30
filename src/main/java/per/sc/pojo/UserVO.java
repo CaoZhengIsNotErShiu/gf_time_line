@@ -15,7 +15,7 @@ public class UserVO {
     /**
      * 用户id
      */
-    private Integer id;
+    private String id;
     /**
      * 昵称
      */
@@ -40,5 +40,11 @@ public class UserVO {
      * 更新时间
      */
     private String updateTime;
+
+
+    /**
+     * 验证码
+     */
+    private String code;
 
 }

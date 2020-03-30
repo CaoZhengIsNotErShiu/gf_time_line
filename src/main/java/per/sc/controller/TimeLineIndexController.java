@@ -78,10 +78,10 @@ public class TimeLineIndexController {
             if(StringUtils.isNotBlank(userName)){
                  userId = userService.queryUserIdByUserName(userName);
             }
-            PageHelper.startPage(pageNum,20);
+            PageHelper.startPage(pageNum,5);
             List<ArticleVO> articleVOList =  indexService.queryAllTimeLineInfo(index,Integer.valueOf(userId));
 
-            PageInfo pageInfo = new PageInfo(articleVOList,20);
+            PageInfo pageInfo = new PageInfo(articleVOList,5);
             List<ArticleVO> list = pageInfo.getList();
 
 //            redisUtil.lSet(index,list,1000*60*60);

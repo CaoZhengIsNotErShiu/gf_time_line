@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="per.sc.mapper.MobileMapper">
+    <!-- 文章 -->
+    <resultMap id="articleMap" type="per.sc.pojo.ArticleVO">
+        <id property="id" column="id" jdbcType="INTEGER" />
+        <result property="userName" column="user_name" jdbcType="VARCHAR" />
+        <result property="image" column="image" jdbcType="VARCHAR" />
+        <result property="thematicUrl" column="thematic_url" jdbcType="VARCHAR" />
+        <result property="title" column="title" jdbcType="VARCHAR" />
+        <result property="data" column="data" jdbcType="VARCHAR" />
+        <result property="text" column="menu_text" jdbcType="VARCHAR" />
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+    </resultMap>
+
+    <!-- 查询顶部轮播图 最多展示三条 -->
+    <select id="getTopImageScroll" resultMap="articleMap" parameterType="java.lang.String">
+        SELECT
+            a.id,
+            a.thematic_url,
+            a.title,
+            a.`data`,
+            a.create_time,
+            a.update_time
+        FROM
+            article_info a
+        LEFT JOIN menu_info mi ON a.art_sub_menu = mi.menu_id
+        <if test="index == 'note' ">
+        WHERE
+          a.art_first_menu = 2
+        </if>
+        <if test="index == 'technology' ">
+            WHERE
+            a.art_first_menu = 3
+        </if>
+        <if test="index == 'jotting' ">
+            WHERE
+            a.art_sub_menu = 7
+        </if>
+        <if test="index == 'jour' ">
+            WHERE
+            a.art_sub_menu = 8
+        </if>
+        <if test="index == 'show' ">
+            WHERE
+            a.art_sub_menu = 9
+        </if>
+        <if test="index == 'front' ">
+            WHERE
+            a.art_sub_menu = 10
+        </if>
+        <if test="index == 'after' ">
+            WHERE
+            a.art_sub_menu = 11
+        </if>
+        <if test="index == 'liunx' ">
+            WHERE
+            a.art_sub_menu = 12
+        </if>
+        <if test="index == 'other' ">
+            WHERE
+            a.art_sub_menu = 13
+        </if>
+        <if test="img == 'img' ">
+            and
+            a.`data` LIKE "%"#{img}"%"
+        </if>
+        GROUP BY
+            a.id
+            ORDER BY a.create_time DESC
+        limit 0,3;
+    </select>
+
+    <!--手机获取文章-->
+    <select id="getMobileListView" resultMap="articleMap" parameterType="java.lang.String">
+        SELECT
+        a.id,
+        a.thematic_url,
+        a.title,
+        a.`data`,
+        a.create_time,
+        a.update_time
+        FROM
+        article_info a
+        LEFT JOIN menu_info mi ON a.art_sub_menu = mi.menu_id
+        <if test="index == 'note' ">
+            WHERE
+            a.art_first_menu = 2
+        </if>
+        <if test="index == 'technology' ">
+            WHERE
+            a.art_first_menu = 3
+        </if>
+        <if test="index == 'jotting' ">
+            WHERE
+            a.art_sub_menu = 7
+        </if>
+        <if test="index == 'jour' ">
+            WHERE
+            a.art_sub_menu = 8
+        </if>
+        <if test="index == 'show' ">
+            WHERE
+            a.art_sub_menu = 9
+        </if>
+        <if test="index == 'front' ">
+            WHERE
+            a.art_sub_menu = 10
+        </if>
+        <if test="index == 'after' ">
+            WHERE
+            a.art_sub_menu = 11
+        </if>
+        <if test="index == 'liunx' ">
+            WHERE
+            a.art_sub_menu = 12
+        </if>
+        <if test="index == 'other' ">
+            WHERE
+            a.art_sub_menu = 13
+        </if>
+        GROUP BY
+        a.id
+        ORDER BY a.create_time DESC
+    </select>
+
+    <!-- 插入评论 -->
+    <insert id="insertUserComment" parameterType="per.sc.pojo.CommentVO"
+            useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into t_comment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="customerId != null"> customer_id, </if>
+            <if test="parentCommentId != null"> parent_comment_id, </if>
+            <if test="contentId != null"> content_id, </if>
+            <if test="content != null"> content, </if>
+             comment_time,
+            <if test="state != null"> state, </if>
+            <if test="type != null"> type, </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="customerId != null"> #{customerId,jdbcType=VARCHAR}, </if>
+            <if test="parentCommentId != null"> #{parentCommentId,jdbcType=VARCHAR}, </if>
+            <if test="contentId != null"> #{contentId,jdbcType=VARCHAR}, </if>
+            <if test="content != null"> #{content,jdbcType=VARCHAR}, </if>
+            now(),
+            <if test="state != null"> #{state,jdbcType=VARCHAR}, </if>
+            <if test="type != null"> 0, </if>
+        </trim>
+    </insert>
+
+    <!--根据评论id查询评论-->
+    <select id="queryUserCommentByCommentId" resultType="per.sc.pojo.CommentVO">
+        SELECT
+            ui.user_name AS tempUserName,
+            tc.id,
+            tc.customer_id AS customerId,
+            tc.parent_comment_id AS parentCommentId,
+            tc.content_id AS contentId,
+            tc.content,
+            tc.comment_time AS commentTime
+        FROM
+            t_comment tc
+        LEFT JOIN user_info ui ON tc.customer_id = ui.id
+        WHERE
+            tc.id = #{id}
+    </select>
+
+
+</mapper>

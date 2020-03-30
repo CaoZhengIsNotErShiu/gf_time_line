@@ -38,12 +38,12 @@ public class SystemLogAspect {
     //本地异常日志记录对象
     private static final Logger logger = LoggerFactory.getLogger(SystemLogAspect.class);
     //Service层切点
-    @Pointcut("@annotation(per.sc.annotation.SystemServiceLog)")
+    @Pointcut("@within(per.sc.annotation.SystemServiceLog)")
     public void serviceAspect(){
     }
 
     //Controller层切点
-    @Pointcut("@annotation(per.sc.annotation.SystemControllerLog)")
+    @Pointcut("@within(per.sc.annotation.SystemControllerLog)")
     public void controllerAspect(){
     }
 

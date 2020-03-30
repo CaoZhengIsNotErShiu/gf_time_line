@@ -3,14 +3,13 @@ package per.sc.config;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
-import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
+import org.springframework.web.servlet.config.annotation.*;
 import per.sc.constant.ConstantClassField;
 
 /**
@@ -25,6 +24,15 @@ import per.sc.constant.ConstantClassField;
  */
 @Configuration
 public class WebMvcConfig extends WebMvcConfigurationSupport {
+
+
+    @Autowired
+    private FilterConfig filterConfig;
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry){
+        registry.addInterceptor(filterConfig).addPathPatterns("/**");
+    }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -42,13 +50,26 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
      * 解决跨域问题
      * @param registry
      */
+//    @Override
+//    public void addCorsMappings(CorsRegistry registry) {
+//        registry.addMapping("/**").allowedOrigins("*")
+//            .allowedMethods("GET", "HEAD", "POST","PUT", "DELETE", "OPTIONS")
+//            .allowCredentials(true).maxAge(3600);
+//    }
+
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**").allowedOrigins("*")
-            .allowedMethods("GET", "HEAD", "POST","PUT", "DELETE", "OPTIONS")
-            .allowCredentials(true).maxAge(3600);
+        //设置允许跨域的路径
+        registry.addMapping("/**")
+                //设置允许跨域请求的域名
+                .allowedOrigins("*")
+                //是否允许证书 不再默认开启
+                .allowCredentials(true)
+                //设置允许的方法
+                .allowedMethods("*")
+                //跨域允许时间
+                .maxAge(3600);
     }
-
 
 
 }

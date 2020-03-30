@@ -5,7 +5,7 @@
 <mapper namespace="per.sc.mapper.UserMapper">
     <!--用户表-->
     <resultMap id="userMap" type="per.sc.pojo.UserVO">
-        <id property="id" column="id" jdbcType="INTEGER" />
+        <id property="id" column="id" jdbcType="VARCHAR" />
         <result property="userName" column="user_name" jdbcType="VARCHAR" />
         <result property="password" column="password" jdbcType="VARCHAR" />
         <result property="phone" column="phone" jdbcType="VARCHAR" />
@@ -49,6 +49,7 @@
     <insert id="register"  parameterType="per.sc.pojo.UserVO">
         insert into user_info
         <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null"> id, </if>
             <if test="userName != null"> user_name, </if>
             <if test="password != null"> password, </if>
             <if test="phone != null"> phone, </if>
@@ -57,6 +58,7 @@
             update_time,
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null"> #{id,jdbcType=VARCHAR}, </if>
             <if test="userName != null"> #{userName,jdbcType=VARCHAR}, </if>
             <if test="password != null">  #{password,jdbcType=VARCHAR}, </if>
             <if test="phone != null">   #{phone,jdbcType=VARCHAR}, </if>

@@ -16,16 +16,11 @@ import per.sc.pojo.ImageVO;
 import per.sc.pojo.UserVO;
 import per.sc.pojo.dto.UserFollArtDTO;
 import per.sc.service.UserServiceI;
-import per.sc.util.DateUtil;
-import per.sc.util.HttpResult;
-import per.sc.util.MD5Util;
-import per.sc.util.RandomUtils;
+import per.sc.util.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
-import java.util.Random;
 import java.util.UUID;
 
 /**
@@ -44,44 +39,49 @@ public class UserController {
     @Autowired
     private UserServiceI userService;
 
+    @Autowired
+    private IdWorker idWorker;
+
     /**
      * 手机号注册
-     * @param phone 手机号
+     * @param user 用户
      * @param session session
      * @return 返回登录结果
      */
     @RequestMapping(value = "pregister",method = RequestMethod.POST)
     @ResponseBody
     @SystemControllerLog(description = "手机号注册")
-    public HttpResult pRegister(@RequestParam("phone")String phone,
-                                @RequestParam("code")String code,
+    public HttpResult pRegister(UserVO user,
                                 HttpSession session){
+
         HttpResult result = new HttpResult();
-        UserVO userVO = null;
         try {
-            //1.获取session中验证码
-            String codeSession = (String) session.getAttribute(phone);
-            userVO = userService.checkPhone(phone);
-            if (StringUtils.isBlank(codeSession) ||!code.equals(codeSession) ){
-                result.setStatus(2);
-                result.setMsg("验证码错误，请重新获取 ~");
+            //1.判断账号是否注册
+            UserVO user1 = userService.checkPhone(user.getPhone());
+
+            if (user1 != null){
+                result.setStatus(304);
+                result.setMsg("手机号已经被注册，直接去登录~");
                 return result;
-            }
-            if (userVO != null){
-                result.setStatus(1);
-                result.setMsg("该手机号已经被注册，请直接登录 ~");
-            }else{
+            }else {
+                //2.获取session中验证码
+                String codeSession = (String) session.getAttribute(user.getPhone());
+                System.out.println("phone = "+ user.getPhone() +"，code = " + codeSession + ",sessionId = "+ session.getId());
+                if (StringUtils.isBlank(codeSession) || !user.getCode().equals(codeSession) ){
+                    result.setStatus(2);
+                    result.setMsg("验证码错误，请重新获取 ~");
+                    return result;
+                }
                 //注册
+                user.setId(idWorker.nextId()+"");
                 String date = DateUtil.getStringAllDate();
-                UserVO user = new UserVO();
                 user.setUserName("TL_"+date);
-                user.setPhone(phone);
                 //MD5加密搞上
-                String initPwd = MD5Util.getMD5WithSalt("123456");
+                String initPwd = MD5Util.getMD5WithSalt(user.getPassword());
                 user.setPassword(initPwd);
                 user.setImage("/38421562074311_.pic.jpg");
                 userService.register(user);
-                result.setStatus(0);
+                result.setStatus(200);
                 result.setMsg("注册成功！ ~");
             }
         } catch (Exception e) {
@@ -180,54 +180,36 @@ public class UserController {
     @SystemControllerLog(description = "生成验证码")
     public HttpResult getCode(@RequestParam("phone")String phone,HttpSession session){
         HttpResult result = new HttpResult();
-        try {
-            //1.生成验证码
-            String code = RandomUtils.randomCode();
-            System.out.println("验证码:"+code);
-            //2.放到session中
-            session.setAttribute(phone,code);
-            int appid = 1400233127;
-            String appkey = "6aac7712ca79ddc6ed5f2e8df940da84";
-            SmsSingleSender ssender = new SmsSingleSender(appid, appkey);
-            // 需要发送短信的手机号码
-            String[] phoneNumbers = {phone};
-            SmsSingleSenderResult result1 = ssender.send(0, "86", phoneNumbers[0],
-                    "验证码为："+ code +"，您正在注册成为TimeLine平台会员，感谢您的支持！", "", "");
-            System.out.println(result1);
-            result.setStatus(0);
-            result.setMsg("获取验证码成功");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
-
-    /**
-     * 检查手机号是否注册
-     * @param phone 手机号
-     * @return 返回
-     */
-    @RequestMapping(value = "checkPhone",method = RequestMethod.POST)
-    @ResponseBody
-    @SystemControllerLog(description = "检查手机号是否注册")
-    public HttpResult checkPhone(@RequestParam("phone") String phone){
-        logger.info("@@1.检查手机号是否注册 checkPhone start @@");
+        logger.info("@@1.生成验证码 checkPhone start @@");
         //判断号码是否被注册
         UserVO vo = null;
         try {
             vo = userService.checkPhone(phone);
+            if (vo != null){
+                result.setStatus(304);
+                result.setMsg("手机号已经被注册，直接去登录~");
+            }else{
+                //1.生成验证码
+                String code = RandomUtils.randomCode();
+                System.out.println("phone = " + phone + "验证码:"+code);
+                //2.放到session中
+                session.setAttribute(phone,code);
+                int appid = 1400233127;
+                String appkey = "6aac7712ca79ddc6ed5f2e8df940da84";
+                SmsSingleSender ssender = new SmsSingleSender(appid, appkey);
+                // 需要发送短信的手机号码
+                String[] phoneNumbers = {phone};
+//                SmsSingleSenderResult result1 = ssender.send(0, "86", phoneNumbers[0],
+//                        "验证码为："+ code +"，您正在注册成为TimeLine平台会员，感谢您的支持！", "", "");
+//                System.out.println(result1);
+                String str  = (String) session.getAttribute(phone);
+                System.out.println("phone = "+ str + "sessionId = "+ session.getId());
+                result.setStatus(200);
+                result.setMsg("发送短信验证码成功，请注意查看您的手机");
+            }
         } catch (Exception e) {
-            logger.error("##1.检查手机号是否注册 checkPhone err ##", e);
+            logger.error("##1.生成验证码 checkPhone err ##", e);
         }
-        HttpResult result = new HttpResult();
-        if (vo != null){
-            result.setStatus(200);
-            result.setMsg("手机号已经被注册，直接去登录~");
-        }else {
-            result.setStatus(500);
-            result.setMsg("手机号没有注册，请先注册 ~");
-        }
-        logger.info("@@2.检查手机号是否注册 checkPhone end @@");
         return result;
     }
 
