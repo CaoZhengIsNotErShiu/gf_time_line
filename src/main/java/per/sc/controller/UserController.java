@@ -5,6 +5,12 @@ import com.github.qcloudsms.SmsSingleSenderResult;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.ExcessiveAttemptsException;
+import org.apache.shiro.authc.IncorrectCredentialsException;
+import org.apache.shiro.authc.UnknownAccountException;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +24,7 @@ import per.sc.pojo.dto.UserFollArtDTO;
 import per.sc.service.UserServiceI;
 import per.sc.util.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
@@ -42,6 +49,11 @@ public class UserController {
     @Autowired
     private IdWorker idWorker;
 
+
+
+
+
+
     /**
      * 手机号注册
      * @param user 用户
@@ -55,6 +67,12 @@ public class UserController {
                                 HttpSession session){
 
         HttpResult result = new HttpResult();
+
+        if (!user.getPassword().equals(user.getPassword_confirm())){
+            result.setMsg("两次密码不一致~");
+            return result;
+        }
+
         try {
             //1.判断账号是否注册
             UserVO user1 = userService.checkPhone(user.getPhone());
@@ -91,6 +109,7 @@ public class UserController {
     }
 
 
+
     /**
      * 账号密码登录
      * @return 返回登录结果
@@ -98,39 +117,94 @@ public class UserController {
     @RequestMapping(value = "dologin",method = RequestMethod.POST)
     @ResponseBody
     @SystemControllerLog(description = "账号密码登录")
-    public HttpResult plogin(UserVO user){
+    public HttpResult plogin(UserVO user,HttpServletRequest request){
         logger.info("@@1.账号密码登录  plogin start @@");
         HttpResult result = new HttpResult();
-        UserVO userVO = null;
+
+//        boolean flag = user.getRememberme() != null && user.getRememberme() == 1 ?  true : false ;
+
+        String loginPwd = MD5Util.getMD5WithSalt(user.getPassword());
+        UsernamePasswordToken token = new UsernamePasswordToken(user.getPhone().trim(),
+                loginPwd);
+
+//        token.setRememberMe(flag);
+
+        Subject subject = ShiroUtil.getSubject();
         try {
-            //把用户输入的密码md5加密
-            String loginPwd = MD5Util.getMD5WithSalt(user.getPassword());
-            userVO = userService.checkPhone(user.getPhone());
-            if (userVO != null){
-                String mysqlPwd = userVO.getPassword();
-                boolean flag = loginPwd.equals(mysqlPwd);
-                if (flag){
-                    result.setStatus(0);
-                    result.setMsg("登录成功，即将跳转 ~");
-                    //隐藏手机号中间4位，清空用户密码
-                    userVO.setPhone(userVO.getPhone().replaceAll("(\\d{3})\\d{4}(\\d{4})", "$1****$2"));
-                    userVO.setPassword("");
-                    result.setData(userVO);
-                }else{
-                    result.setStatus(1);
-                    result.setMsg("账号/密码出现了错误 ~");
-                }
-            }else{
-                result.setStatus(2);
-                result.setMsg("您还没有注册，请先去注册 ~");
+            subject.login(token);
+            if (subject.isAuthenticated()) {
+                String ip = IpUtil.getIp(request);
+                logger.info("用户:{}，登陆成功，ip:{}", user.getPhone(), ip);
+                request.getSession().setAttribute("userIp", ip);
+                result.setStatus(200);
+                boolean remembered = subject.isRemembered();
+                logger.info("记住我 = {}",remembered);
+                result.setMsg("登陆成功~");
+                user = userService.checkPhone(user.getPhone());
+                //隐藏手机号中间4位，清空用户密码
+                user.setPhone(user.getPhone().replaceAll("(\\d{3})\\d{4}(\\d{4})", "$1****$2"));
+                user.setPassword("");
+                result.setData(user);
+
+
             }
-        } catch (Exception e) {
-            logger.info("## 1.账号密码登录  plogin err ##",e);
+        } catch (UnknownAccountException e) {
+            result.setStatus(404);
+            result.setMsg("用户名/密码错误，若无账号，请先注册~");
+        } catch (IncorrectCredentialsException e) {
+            result.setStatus(403);
+            result.setMsg("用户名/密码错误，若无账号，请先注册~");
+        } catch (ExcessiveAttemptsException e) {
+            result.setStatus(500);
+            result.setMsg("登录失败多次，账户锁定10分钟");
         }
-        logger.info("@@2.账号密码登录  plogin end @@");
         return result;
+
+//        UserVO userVO = null;
+//        try {
+//            //把用户输入的密码md5加密
+//            String loginPwd = MD5Util.getMD5WithSalt(user.getPassword());
+//            userVO = userService.checkPhone(user.getPhone());
+//            if (userVO != null){
+//                String mysqlPwd = userVO.getPassword();
+//                boolean flag = loginPwd.equals(mysqlPwd);
+//                if (flag){
+//                    result.setStatus(0);
+//                    result.setMsg("登录成功，即将跳转 ~");
+//                    //隐藏手机号中间4位，清空用户密码
+//                    userVO.setPhone(userVO.getPhone().replaceAll("(\\d{3})\\d{4}(\\d{4})", "$1****$2"));
+//                    userVO.setPassword("");
+//                    result.setData(userVO);
+//                }else{
+//                    result.setStatus(1);
+//                    result.setMsg("账号/密码出现了错误 ~");
+//                }
+//            }else{
+//                result.setStatus(2);
+//                result.setMsg("您还没有注册，请先去注册 ~");
+//            }
+//        } catch (Exception e) {
+//            logger.info("## 1.账号密码登录  plogin err ##",e);
+//        }
+//        logger.info("@@2.账号密码登录  plogin end @@");
+//        return result;
     }
 
+
+    /**
+     * 退出
+     * @return
+     */
+    @GetMapping(value = "/logout")
+    @ResponseBody
+    public HttpResult logout() {
+        Subject sub = SecurityUtils.getSubject();
+        sub.logout();
+        HttpResult result = new HttpResult();
+        result.setStatus(200);
+        result.setMsg("退出成功~");
+        return result;
+    }
 
     /**
      * 手机号登陆

@@ -10,6 +10,9 @@ import per.sc.service.ArticleServiceI;
 import per.sc.util.DateUtil;
 import per.sc.util.HtmlToText;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpSessionContext;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -26,6 +29,15 @@ public class Test01 {
     private ArticleServiceI artService;
 
 
+    @Autowired
+    private HttpSession session;
+
+    @Test
+    public void testSession(){
+//        session.setAttribute("15651367595","789456");
+        String attribute = (String) session.getAttribute("15651367595");
+        System.out.println(attribute);
+    }
 
     @Test
     public void getFileJpg(){

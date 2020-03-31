@@ -13,6 +13,18 @@
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
     </resultMap>
 
+    <resultMap id="roleMap" type="per.sc.pojo.Role">
+        <id property="id" column="id" jdbcType="VARCHAR" />
+        <result property="roleName" column="role" jdbcType="VARCHAR" />
+        <result property="desc" column="description" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <resultMap id="permissionsMap" type="per.sc.pojo.Permission">
+        <id property="id" column="id" jdbcType="VARCHAR" />
+        <result property="permissionsName" column="name" jdbcType="VARCHAR" />
+        <result property="desc" column="description" jdbcType="VARCHAR" />
+    </resultMap>
+
     <!-- 根据用户名查询用户信息 -->
     <select id="queryUserByName" resultType="per.sc.pojo.UserVO">
         SELECT
@@ -54,6 +66,7 @@
             <if test="password != null"> password, </if>
             <if test="phone != null"> phone, </if>
             <if test="image != null"> image, </if>
+            role_id,
             create_time,
             update_time,
         </trim>
@@ -63,6 +76,7 @@
             <if test="password != null">  #{password,jdbcType=VARCHAR}, </if>
             <if test="phone != null">   #{phone,jdbcType=VARCHAR}, </if>
             <if test="image != null">  #{image,jdbcType=VARCHAR}, </if>
+            "1",
             now(),
             now(),
         </trim>
@@ -117,5 +131,39 @@
             ui.id = #{userId}
     </select>
 
+
+
+    <select id="getRoleByUserId" resultMap="roleMap">
+            SELECT
+                r.id,
+                r.role,
+                r.description
+            FROM
+                user_role ur
+            LEFT JOIN role r ON ur.role_id = r.id
+            WHERE
+                ur.uid = #{id}
+    </select>
+
+    <select id="getPermissionByUserId" resultMap="permissionsMap">
+        SELECT
+            p.*
+        FROM
+            user_role ur
+        LEFT JOIN role r ON ur.role_id = r.id
+        LEFT JOIN role_permission rp ON rp.role_id = r.id
+        LEFT JOIN permission p ON p.id = rp.permission_id
+        WHERE
+            ur.uid = #{id}
+    </select>
+
+    <select id="findUserById" resultMap="userMap">
+        SELECT
+            *
+        FROM
+            user_info
+        WHERE
+            phone = #{uId}
+    </select>
 
 </mapper>

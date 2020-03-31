@@ -2,12 +2,15 @@ package per.sc.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import per.sc.mapper.UserMapper;
+import per.sc.pojo.Permission;
+import per.sc.pojo.Role;
 import per.sc.pojo.UserVO;
 import per.sc.pojo.dto.UserFollArtDTO;
 import per.sc.service.UserServiceI;
+
+import java.util.*;
 
 /**
  *
@@ -62,6 +65,7 @@ public class UserServiceImpl implements UserServiceI {
         return userMapper.queryUserByName(userName);
     }
 
+
     /**
      * 查询用户文章数，关注度
      * @param userId 用户id
@@ -70,5 +74,23 @@ public class UserServiceImpl implements UserServiceI {
     @Override
     public UserFollArtDTO queryUserInfoByUserId(Integer userId, Integer loginId) {
         return userMapper.queryUserInfoByUserId(userId,loginId);
+    }
+
+
+    /**
+     * 根据用户id查询所有的角色信息
+     */
+    public List<Role> findRoles(Integer id) {
+        return  userMapper.getRoleByUserId(id);
+    }
+
+    //根据用户的id查询所有权限信息
+    public List<Permission> findPermissions(Integer id) {
+        return userMapper.getPermissionByUserId(id);
+    }
+
+    @Override
+    public UserVO findUserById(String uId) {
+        return userMapper.findUserById(uId);
     }
 }

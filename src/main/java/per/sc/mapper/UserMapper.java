@@ -1,8 +1,12 @@
 package per.sc.mapper;
 
 import org.apache.ibatis.annotations.Param;
+import per.sc.pojo.Permission;
+import per.sc.pojo.Role;
 import per.sc.pojo.UserVO;
 import per.sc.pojo.dto.UserFollArtDTO;
+
+import java.util.List;
 
 /**
  *
@@ -53,4 +57,20 @@ public interface UserMapper {
      */
     UserFollArtDTO queryUserInfoByUserId(@Param("userId") Integer userId,
                                          @Param("loginId") Integer loginId);
+
+    /**
+     * 根据用户id查询所有的角色信息
+     * @param id 用户id
+     * @return
+     */
+    List<Role> getRoleByUserId(Integer id);
+
+    /**
+     * 根据用户的id查询所有权限信息
+     * @param id
+     * @return
+     */
+    List<Permission> getPermissionByUserId(Integer id);
+
+    UserVO findUserById(String uId);
 }

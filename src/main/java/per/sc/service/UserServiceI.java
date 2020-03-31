@@ -1,7 +1,11 @@
 package per.sc.service;
 
+import per.sc.pojo.Permission;
+import per.sc.pojo.Role;
 import per.sc.pojo.UserVO;
 import per.sc.pojo.dto.UserFollArtDTO;
+
+import java.util.List;
 
 /**
  *
@@ -45,4 +49,10 @@ public interface UserServiceI {
     UserFollArtDTO queryUserInfoByUserId(Integer userId,Integer loginId);
 
 
+    List<Role> findRoles(Integer id);
+
+    List<Permission> findPermissions(Integer id);
+
+
+    UserVO findUserById(String uId);
 }
