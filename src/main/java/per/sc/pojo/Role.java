@@ -1,33 +1,91 @@
 package per.sc.pojo;
 
+import java.util.Date;
+import javax.persistence.*;
 
-import lombok.Data;
-import java.util.Set;
-
-/**
- * 角色
- * @author Administrator
- */
-@Data
+@Table(name = "sys_role")
 public class Role {
+    @Id
+    @GeneratedValue(generator = "JDBC")
+    private Integer id;
+
+    private String name;
+
+    private String description;
+
+    @Column(name = "createTime")
+    private Date createtime;
+
+    @Column(name = "updateTime")
+    private Date updatetime;
 
     /**
-     * id
+     * @return id
      */
-    private String id;
+    public Integer getId() {
+        return id;
+    }
 
     /**
-     * 角色名
+     * @param id
      */
-    private String roleName;
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     /**
-     * 描述
+     * @return name
      */
-    private String desc;
+    public String getName() {
+        return name;
+    }
 
     /**
-     * 角色对应权限集合
+     * @param name
      */
-    private Set<Permission> permissions;
+    public void setName(String name) {
+        this.name = name == null ? null : name.trim();
+    }
+
+    /**
+     * @return description
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * @param description
+     */
+    public void setDescription(String description) {
+        this.description = description == null ? null : description.trim();
+    }
+
+    /**
+     * @return createTime
+     */
+    public Date getCreatetime() {
+        return createtime;
+    }
+
+    /**
+     * @param createtime
+     */
+    public void setCreatetime(Date createtime) {
+        this.createtime = createtime;
+    }
+
+    /**
+     * @return updateTime
+     */
+    public Date getUpdatetime() {
+        return updatetime;
+    }
+
+    /**
+     * @param updatetime
+     */
+    public void setUpdatetime(Date updatetime) {
+        this.updatetime = updatetime;
+    }
 }

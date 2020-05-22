@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="per.sc.mapper.ArticleInfoMapper" >
+  <resultMap id="BaseResultMap" type="per.sc.pojo.ArticleInfo" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="thematic_url" property="thematicUrl" jdbcType="VARCHAR" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="art_first_menu" property="artFirstMenu" jdbcType="VARCHAR" />
+    <result column="art_sub_menu" property="artSubMenu" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="data" property="data" jdbcType="LONGVARCHAR" />
+  </resultMap>
+</mapper>

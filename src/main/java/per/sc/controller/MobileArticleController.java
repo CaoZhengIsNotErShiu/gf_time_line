@@ -5,7 +5,6 @@ import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import per.sc.annotation.SystemControllerLog;
 import per.sc.pojo.ArticleVO;
 import per.sc.pojo.Mobile;
 import per.sc.service.MobileServiceI;
@@ -31,7 +30,6 @@ public class MobileArticleController {
      */
     @RequestMapping(value = "getTopImageScroll", method = RequestMethod.POST)
     @ResponseBody
-    @SystemControllerLog(description = "获取所有用户的时间线")
     public List<ArticleVO> getTopImageScroll( String index){
         log.info("## 1. 顶部轮播图 queryAllTimeLineInfo start ##");
         try {
@@ -50,7 +48,6 @@ public class MobileArticleController {
      */
     @RequestMapping(value = "getMobileListView", method = RequestMethod.POST)
     @ResponseBody
-    @SystemControllerLog(description = "手机获取所有用户的时间线")
     public Mobile queryAllTimeLineInfo(String index, Integer pageNum){
         log.info("## 1. 手机获取所有用户的时间线 getMobileListView start ##");
         try {

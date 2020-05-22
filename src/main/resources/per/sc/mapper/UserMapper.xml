@@ -1,169 +1,22 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="per.sc.mapper.UserMapper">
-    <!--用户表-->
-    <resultMap id="userMap" type="per.sc.pojo.UserVO">
-        <id property="id" column="id" jdbcType="VARCHAR" />
-        <result property="userName" column="user_name" jdbcType="VARCHAR" />
-        <result property="password" column="password" jdbcType="VARCHAR" />
-        <result property="phone" column="phone" jdbcType="VARCHAR" />
-        <result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
-        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
-    </resultMap>
-
-    <resultMap id="roleMap" type="per.sc.pojo.Role">
-        <id property="id" column="id" jdbcType="VARCHAR" />
-        <result property="roleName" column="role" jdbcType="VARCHAR" />
-        <result property="desc" column="description" jdbcType="VARCHAR" />
-    </resultMap>
-
-    <resultMap id="permissionsMap" type="per.sc.pojo.Permission">
-        <id property="id" column="id" jdbcType="VARCHAR" />
-        <result property="permissionsName" column="name" jdbcType="VARCHAR" />
-        <result property="desc" column="description" jdbcType="VARCHAR" />
-    </resultMap>
-
-    <!-- 根据用户名查询用户信息 -->
-    <select id="queryUserByName" resultType="per.sc.pojo.UserVO">
-        SELECT
-            image
-        FROM
-            user_info
-        WHERE
-            user_name =  #{userName}
-    </select>
-
-
-    <select id="queryUserIdByUserId" resultType="per.sc.pojo.UserVO">
-        SELECT
-            id,
-            user_name AS userName,
-            image
-        FROM
-            user_info
-        WHERE
-            id =  #{customerId}
-    </select>
-
-
-    <!--根据用户名查询用户id-->
-    <select id="queryUserIdByUserName" parameterType="java.lang.String" resultType="java.lang.String">
-        SELECT
-            id
-        FROM
-            user_info
-        WHERE
-            user_name = #{createUser,jdbcType=VARCHAR}
-    </select>
-
-    <insert id="register"  parameterType="per.sc.pojo.UserVO">
-        insert into user_info
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="id != null"> id, </if>
-            <if test="userName != null"> user_name, </if>
-            <if test="password != null"> password, </if>
-            <if test="phone != null"> phone, </if>
-            <if test="image != null"> image, </if>
-            role_id,
-            create_time,
-            update_time,
-        </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="id != null"> #{id,jdbcType=VARCHAR}, </if>
-            <if test="userName != null"> #{userName,jdbcType=VARCHAR}, </if>
-            <if test="password != null">  #{password,jdbcType=VARCHAR}, </if>
-            <if test="phone != null">   #{phone,jdbcType=VARCHAR}, </if>
-            <if test="image != null">  #{image,jdbcType=VARCHAR}, </if>
-            "1",
-            now(),
-            now(),
-        </trim>
-    </insert>
-
-    <select id="checkPhone" parameterType="java.lang.String" resultMap="userMap">
-        SELECT
-            *
-        FROM
-            user_info
-        WHERE
-            phone = #{phone,jdbcType=INTEGER}
-    </select>
-
-    <select id="queryTimeLineInfoById" resultMap="userMap">
-        select * from time_line_info where id = #{id,jdbcType=INTEGER}
-    </select>
-
-    <select id="queryUserInfoByUserId" parameterType="java.lang.Integer" resultType="per.sc.pojo.dto.UserFollArtDTO">
-        SELECT
-            ui.user_name AS userName,
-            ui.signature,
-            ui.image,
-            (
-                SELECT
-                    count(1)
-                FROM
-                    article_info ai
-                WHERE
-                    ai.user_name = ui.id
-            ) AS articles,
-            (
-                SELECT
-                    count(1)
-                FROM
-                    follow_info fi
-                WHERE
-                    fi.by_follower_id = ui.id
-            ) AS follows,
-            (
-                SELECT
-                    count(1)
-                FROM
-                    follow_info
-                WHERE
-                    follower_id = #{loginId}
-                AND by_follower_id = #{userId}
-            ) as isFollow
-        FROM
-            user_info ui
-        WHERE
-            ui.id = #{userId}
-    </select>
-
-
-
-    <select id="getRoleByUserId" resultMap="roleMap">
-            SELECT
-                r.id,
-                r.role,
-                r.description
-            FROM
-                user_role ur
-            LEFT JOIN role r ON ur.role_id = r.id
-            WHERE
-                ur.uid = #{id}
-    </select>
-
-    <select id="getPermissionByUserId" resultMap="permissionsMap">
-        SELECT
-            p.*
-        FROM
-            user_role ur
-        LEFT JOIN role r ON ur.role_id = r.id
-        LEFT JOIN role_permission rp ON rp.role_id = r.id
-        LEFT JOIN permission p ON p.id = rp.permission_id
-        WHERE
-            ur.uid = #{id}
-    </select>
-
-    <select id="findUserById" resultMap="userMap">
-        SELECT
-            *
-        FROM
-            user_info
-        WHERE
-            phone = #{uId}
-    </select>
-
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="per.sc.mapper.UserMapper" >
+  <resultMap id="BaseResultMap" type="per.sc.pojo.User" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="username" property="username" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="nickname" property="nickname" jdbcType="VARCHAR" />
+    <result column="headImgUrl" property="headimgurl" jdbcType="VARCHAR" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="telephone" property="telephone" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="birthday" property="birthday" jdbcType="DATE" />
+    <result column="sex" property="sex" jdbcType="BIT" />
+    <result column="status" property="status" jdbcType="BIT" />
+    <result column="createTime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="updateTime" property="updatetime" jdbcType="TIMESTAMP" />
+  </resultMap>
 </mapper>

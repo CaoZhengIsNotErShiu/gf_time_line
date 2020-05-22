@@ -56,19 +56,19 @@ public class Test01 {
 
         String pathName = "F://intentImage/";
         File file = new File(pathName);
-        if (file.exists()){
-            String[] list = file.list();
-            Stream<String> stream = Stream.of(list);
-            List<ArticleVO> artList =  artService.queryYesterdayArt();
-            artList.stream()
-                    .filter(articleVO -> !articleVO.getData().contains(yesterday))
-                    .forEach(s -> System.out.println(HtmlToText.getImageSrc(s.getData())));
-//            stream.filter(s -> s.contains(yesterday))
-////                    .forEach(System.out::println);
-//                    .forEach(s -> new File(pathName+s).delete());
-
-
-        }
+//        if (file.exists()){
+//            String[] list = file.list();
+//            Stream<String> stream = Stream.of(list);
+////            List<ArticleVO> artList =  artService.queryYesterdayArt();
+//            artList.stream()
+//                    .filter(articleVO -> !articleVO.getData().contains(yesterday))
+//                    .forEach(s -> System.out.println(HtmlToText.getImageSrc(s.getData())));
+////            stream.filter(s -> s.contains(yesterday))
+//////                    .forEach(System.out::println);
+////                    .forEach(s -> new File(pathName+s).delete());
+//
+//
+//        }
     }
 
     /**
@@ -123,12 +123,12 @@ public class Test01 {
 
 
 
-
-    @Test
-    public void Test01(){
-        List<ArticleVO> list = artService.queryIndexInfo();
-        System.out.println(list.toString());
-    }
+//
+//    @Test
+//    public void Test01(){
+//        List<ArticleVO> list = artService.queryIndexInfo();
+//        System.out.println(list.toString());
+//    }
 
     @Test
     public void test02(){
@@ -176,5 +176,14 @@ public class Test01 {
     // 使用 java 8 排序
     private void sortUsingJava8(List<String> names){
         Collections.sort(names);
+    }
+
+
+    @Test
+    public void test04(){
+        String userName = "123123-456789";
+        String str1=userName.substring(0, userName.indexOf("-"));
+        String str2=userName.substring(str1.length()+1, userName.length());
+        System.out.println(str2);
     }
 }

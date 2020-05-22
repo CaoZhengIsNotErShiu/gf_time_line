@@ -1,7 +1,9 @@
 package per.sc.service;
 
+import org.springframework.web.multipart.MultipartFile;
 import per.sc.pojo.ArticleVO;
 import per.sc.pojo.TimeLineVO;
+import per.sc.result.ResultData;
 
 import java.util.List;
 
@@ -31,4 +33,6 @@ public interface UploadServiceI {
      * @param articleVO
      */
     void updateArticleById(ArticleVO articleVO);
+
+    ResultData upload(MultipartFile file);
 }

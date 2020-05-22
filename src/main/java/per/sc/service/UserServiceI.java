@@ -2,9 +2,14 @@ package per.sc.service;
 
 import per.sc.pojo.Permission;
 import per.sc.pojo.Role;
+import per.sc.pojo.User;
 import per.sc.pojo.UserVO;
 import per.sc.pojo.dto.UserFollArtDTO;
+import per.sc.result.ResultData;
+import per.sc.service.base.BaseService;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
@@ -12,7 +17,7 @@ import java.util.List;
  * @author Administrator
  * @date 2019/7/17
  */
-public interface UserServiceI {
+public interface UserServiceI extends BaseService<User, String>{
 
     /**
      * 查询该号码是否被注册
@@ -55,4 +60,14 @@ public interface UserServiceI {
 
 
     UserVO findUserById(String uId);
+
+    ResultData plogin(User user, HttpServletRequest request);
+
+    ResultData pRegister(User user, HttpSession session);
+
+    ResultData getCode(String phone, HttpSession session);
+
+    ResultData getUserInfo();
+
+
 }

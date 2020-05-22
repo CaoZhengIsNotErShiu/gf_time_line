@@ -2,9 +2,10 @@ package per.sc.pojo;
 
 import lombok.Data;
 import lombok.ToString;
+import org.springframework.data.annotation.Id;
 
+import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Set;
 
 /**
  *
@@ -13,55 +14,23 @@ import java.util.Set;
  */
 @Data
 @ToString
+@Entity
+@Table(name = "user_info")
 public class UserVO implements Serializable{
 
-    /**
-     * 用户id
-     */
-    private String id;
-    /**
-     * 昵称
-     */
-    private String userName;
-    /**
-     * 密码
-     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Integer id;
+
+    @Column(name = "username")
+    private String username;
+
+    @Column(name = "password")
     private String password;
-    /**
-     * 确认密码
-     */
-    private String password_confirm;
-    /**
-     * 电话号码
-     */
-    private String phone;
-    /**
-     * 图片
-     */
-    private String image;
-    /**
-     * 创建时间
-     */
-    private String createTime;
-    /**
-     * 更新时间
-     */
-    private String updateTime;
 
+    @Column(name = "role")
+    private String role;
 
-    /**
-     * 验证码
-     */
-    private String code;
-
-    /**
-     * 用户对应的角色集合
-     */
-    private Set<Role> roles;
-
-    /**
-     * 记录我
-     */
-    private Integer  rememberme;
-
+    // getter and setter...
 }

@@ -1,56 +1,69 @@
 package per.sc.service;
 
-import per.sc.pojo.ArticleVO;
+import per.sc.pojo.ArticleInfo;
+import per.sc.result.ResultData;
+import per.sc.service.base.BaseService;
+import per.sc.service.base.PluginPage;
 
-import java.util.List;
 
 /**
  *
  * @author Administrator
  * @date 2019/8/28
  */
-public interface ArticleServiceI {
+public interface ArticleServiceI  extends BaseService<ArticleInfo,String> {
 
     /**
-     * 根据用户名获取用户所有文章
-     * @param userId 用户id
+     * 获取所有文章
+     * @param pluginPage
      * @return
      */
-    List<ArticleVO> queryUserArticleByUserName(String userId);
+    ResultData getArtices(PluginPage<ArticleInfo> pluginPage);
 
-    /**
-     * 根据id查询推荐文章
-     * @param id 文章id
-     * @return
-     */
-    List<ArticleVO> queryArticleById(Integer id);
+    ResultData postArticle(ArticleInfo art);
 
-    /**
-     * 根据文章id，查询文章上下两篇文章
-     * @param id
-     * @return
-     */
-    List<ArticleVO> queryNext(Integer id);
+    ResultData getArticeByKey(String key, String userName);
 
-    /**
-     * 查询主页数据
-     * @return
-     */
-    List<ArticleVO> queryIndexInfo();
-
-    /**
-     * 查询文章细节
-     * @param list art
-     * @param userId 用户id
-     * @return
-     */
-    List<ArticleVO> queryArtDetail(List<ArticleVO> list,String userId);
-
-    /**
-     * 查询昨天发布的文章
-     * @return
-     */
-    List<ArticleVO> queryYesterdayArt();
+//    /**
+//     * 根据用户名获取用户所有文章
+//     * @param userId 用户id
+//     * @return
+//     */
+//    List<ArticleVO> queryUserArticleByUserName(String userId);
+//
+//    /**
+//     * 根据id查询推荐文章
+//     * @param id 文章id
+//     * @return
+//     */
+//    List<ArticleVO> queryArticleById(Integer id);
+//
+//    /**
+//     * 根据文章id，查询文章上下两篇文章
+//     * @param id
+//     * @return
+//     */
+//    List<ArticleVO> queryNext(Integer id);
+//
+//    /**
+//     * 查询主页数据
+//     * @return
+//     */
+//    List<ArticleVO> queryIndexInfo();
+//
+//    /**
+//     * 查询文章细节
+//     * @param list art
+//     * @param userId 用户id
+//     * @return
+//     */
+//    List<ArticleVO> queryArtDetail(List<ArticleVO> list,String userId);
+//
+//    /**
+//     * 查询昨天发布的文章
+//     * @return
+//     */
+//    List<ArticleVO> queryYesterdayArt();
 
 //    /**
 //     * 查询后端文章

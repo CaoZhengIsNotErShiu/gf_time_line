@@ -1,13 +1,21 @@
 package per.sc.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import per.sc.constant.ConstantClassField;
 import per.sc.mapper.UploadMapper;
 import per.sc.pojo.ArticleVO;
+import per.sc.pojo.ImageVO;
 import per.sc.pojo.TimeLineVO;
+import per.sc.result.ResultData;
 import per.sc.service.UploadServiceI;
+import per.sc.util.IdWorker;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -16,6 +24,7 @@ import java.util.List;
  * @Date: 19/7/9 下午7:23
  * @Version 1.0
  */
+@Slf4j
 @Service("uploadService")
 public class UploadService implements UploadServiceI {
 
@@ -51,5 +60,28 @@ public class UploadService implements UploadServiceI {
     @Override
     public void updateArticleById(ArticleVO articleVO) {
         uploadMapper.updateArticleById(articleVO);
+    }
+
+
+
+    @Override
+    public ResultData upload(MultipartFile file) {
+        log.info("@@1.上传图片 uploadImage start @@");
+        IdWorker idWorker = new IdWorker();
+        Long id = idWorker.nextId();
+        String path = id + ".jpg";
+        String filePath = ConstantClassField.TEMP_PATH + path;
+        if (!file.isEmpty()){
+            try {
+                file.transferTo(new File(filePath));
+            } catch (IOException e) {
+                log.error("##1.上传文件 uploadImage ERR ##", e.getMessage());
+                return ResultData.error(e.getMessage());
+            }
+        }
+        ImageVO pojo = new ImageVO();
+        pojo.setUrl(File.separator+"image"+File.separator+path);
+        log.info("@@2.上传图片 uploadImage end @@");
+        return ResultData.success(pojo);
     }
 }

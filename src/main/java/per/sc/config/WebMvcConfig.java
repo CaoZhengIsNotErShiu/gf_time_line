@@ -46,17 +46,6 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
                 .addResourceLocations("file:"+uploadPath);
     }
 
-    /**
-     * 解决跨域问题
-     * @param registry
-     */
-//    @Override
-//    public void addCorsMappings(CorsRegistry registry) {
-//        registry.addMapping("/**").allowedOrigins("*")
-//            .allowedMethods("GET", "HEAD", "POST","PUT", "DELETE", "OPTIONS")
-//            .allowCredentials(true).maxAge(3600);
-//    }
-
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         //设置允许跨域的路径

@@ -1,8 +1,11 @@
 package per.sc.util;
 
+import per.sc.pojo.Menu;
 import per.sc.pojo.MenuVO;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -13,16 +16,36 @@ import java.util.List;
  */
 public class MenuUtil {
 
-    public static List<MenuVO>  getChildMenus(List<MenuVO> list) {
-        List<MenuVO> parentList = getParentMenus(list);
-        List<MenuVO> returnList = new ArrayList();
-        for (Iterator<MenuVO> iterator = parentList.iterator(); iterator.hasNext(); ) {
-            MenuVO t =  iterator.next();
+    public static <T>  List<T>  getChildMenus(List<T> list) {
+        List<T> parentList = getParentMenus(list);
+        List<T> returnList = new ArrayList();
+        for (Iterator<T> iterator = parentList.iterator(); iterator.hasNext(); ) {
+            T t =  iterator.next();
             // 一、根据传入的某个父节点ID,遍历该父节点的所有子节点
             recursionFn(list, t);
             returnList.add(t);
         }
         return returnList;
+    }
+
+
+    public static void main(String[] args) {
+        List<Menu> list = new ArrayList<>();
+        Menu menu = new Menu();
+        menu.setMenuId(1);
+        menu.setMenuText("西瓜");
+        menu.setMenuParentId("0");
+
+        Menu menu1 = new Menu();
+        menu1.setMenuId(2);
+        menu1.setMenuText("菠萝");
+        menu1.setMenuParentId("1");
+        list.add(menu);
+        list.add(menu1);
+        List<Menu> parentMenus = getParentMenus(list);
+        for (Menu m : parentMenus) {
+            System.out.println(m.toString());
+        }
     }
 
     /**
@@ -31,43 +54,84 @@ public class MenuUtil {
      * @param list
      * @return
      */
-    private static List<MenuVO> getParentMenus(List<MenuVO> list) {
-        List<MenuVO> parentList = new ArrayList();
-        for (Iterator<MenuVO> iterator = list.iterator(); iterator.hasNext(); ) {
-            MenuVO menu =  iterator.next();
-            if (menu.getParentId().equals("0")) {
-                parentList.add(menu);
+    private static <T> List<T> getParentMenus(List<T> list) {
+        List<T> parentList = new ArrayList();
+        for (Iterator<T> iterator = list.iterator(); iterator.hasNext(); ) {
+            T menu =  iterator.next();
+            //统一处理公共字段
+            Class<?> clazz = menu.getClass();
+            String operator;
+            try {
+                operator = "menuParentId";
+                Field fieldDate = clazz.getDeclaredField(operator);
+                fieldDate.setAccessible(true);
+                Object o = fieldDate.get(menu);
+                if (o.equals("0")) {
+                    parentList.add(menu);
+                }
+            } catch (NoSuchFieldException e) {
+                //无此字段
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
             }
         }
         return parentList;
     }
 
-    private static void recursionFn(List<MenuVO> list, MenuVO t) {
+    private static <T> void recursionFn(List<T> list, T t) {
         // 得到子节点列表
-        List<MenuVO> childList = getChildList(list, t);
-        t.setChildren(childList);
-        for (MenuVO tChild : childList) {
-            // 判断是否有子节点
-            if (hasChild(list, tChild)) {
-                Iterator<MenuVO> it = childList.iterator();
-                while (it.hasNext()) {
-                    MenuVO n = it.next();
-                    recursionFn(list, n);
+        List<T> childList = getChildList(list, t);
+        //统一处理公共字段
+        Class<?> clazz = t.getClass();
+        String operator;
+        try {
+            operator = "children";
+            Field fieldDate = clazz.getDeclaredField(operator);
+            fieldDate.setAccessible(true);
+            fieldDate.set(t,childList);
+            for (T tChild : childList) {
+                // 判断是否有子节点
+                if (hasChild(list, tChild)) {
+                    Iterator<T> it = childList.iterator();
+                    while (it.hasNext()) {
+                        T n = it.next();
+                        recursionFn(list, n);
+                    }
                 }
             }
+        } catch (NoSuchFieldException e) {
+            //无此字段
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
         }
     }
+
+
 
     /**
      * 得到子节点列表
      */
-    private static List<MenuVO> getChildList(List<MenuVO> list, MenuVO menu) {
-        List<MenuVO> menuList = new ArrayList();
-        Iterator<MenuVO> it = list.iterator();
+    private static <T> List<T> getChildList(List<T> list, T menu)  {
+        List<T> menuList = new ArrayList();
+        Iterator<T> it = list.iterator();
         while (it.hasNext()) {
-            MenuVO m = it.next();
-            if (m.getParentId().equals(menu.getMenuId())) {
-                menuList.add(m);
+            T m = it.next();
+            Class<?> clazz = m.getClass();
+            Field parentId = null;
+            try {
+                parentId = clazz.getDeclaredField("menuParentId");
+                parentId.setAccessible(true);
+                String pId = (String) parentId.get(m);
+                Field menuId = clazz.getDeclaredField("menuId");
+                menuId.setAccessible(true);
+                Integer mId = (Integer) menuId.get(menu);
+                if (pId.equals(Integer.toString(mId))) {
+                    menuList.add(m);
+                }
+            } catch (NoSuchFieldException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
             }
         }
         return menuList;
@@ -76,7 +140,7 @@ public class MenuUtil {
     /**
      * 判断是否有子节点
      */
-    private static boolean hasChild(List<MenuVO> list, MenuVO menu) {
+    private static <T> boolean hasChild(List<T> list, T menu) {
         return getChildList(list, menu).size() > 0 ? true : false;
     }
 }
